@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function Hero() {
   return (
     <section className="bg-gray-50">
@@ -18,13 +19,19 @@ export default function Hero() {
           </p>
 
           <div className="flex gap-4">
-            <button className="rounded-lg bg-black px-6 py-3 text-white hover:opacity-90">
+            <Link
+            href="/booking"
+             className="rounded-lg bg-black px-6 py-3 text-white"
+            >
               Book Appointment
-            </button>
+            </Link>
 
-            <button className="rounded-lg border px-6 py-3 hover:bg-gray-100">
+            <Link
+              href="/gallery"
+              className="rounded-lg border px-6 py-3"
+              >
               View Gallery
-            </button>
+            </Link>
           </div>
         </div>
       </div>
