@@ -23,7 +23,7 @@ export default function Services() {
   return (
     <section className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <h2 className="mb-12 text-center text-4xl font-bold">
+        <h2 className="mb-12 text-center text-4xl text-gray-400 font-bold">
           Our Services
         </h2>
 
@@ -31,9 +31,9 @@ export default function Services() {
           {services.map((service) => (
             <div
               key={service.title}
-              className="rounded-2xl border p-8 shadow-sm transition hover:shadow-lg"
+              className="rounded-2xl  border p-8 shadow-sm transition hover:shadow-lg"
             >
-              <h3 className="mb-4 text-2xl font-semibold">
+              <h3 className="mb-4 text-2xl text-gray-400 font-semibold">
                 {service.title}
               </h3>
 
@@ -41,7 +41,7 @@ export default function Services() {
                 {service.description}
               </p>
 
-              <p className="text-xl font-bold">
+              <p className="text-xl text-gray-600 font-bold">
                 {service.price}
               </p>
             </div>
