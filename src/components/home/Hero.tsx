@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
+
 export default function Hero() {
   return (
     <section className="bg-gray-50">
       <div className="mx-auto flex min-h-[80vh] max-w-7xl items-center gap-12 px-6">
-        <div className="flex-1">
+        <div className="flex-1 max-w-xl">
           <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
             Professional Dog Grooming
           </p>
@@ -19,26 +21,15 @@ export default function Hero() {
             look and feel amazing.
           </p>
 
-          <div className="flex-1">
-            <Link
-            href="/booking"
-             className="rounded-lg bg-black px-6 py-3 text-white"
-            >
-              Book Appointment
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link href="/booking">
+              <Button> Book Appointment </Button>
             </Link>
 
-            <Link
-              href="/gallery"
-              className="
-              rounded-lg
-              border-gray-300 
-              px-6 
-              py-3
-              text-gray-800
-              hover:bg-gray-300
-              "
-              >
+            <Link href="/gallery">
+              <Button variant="secondary">
               View Gallery
+              </Button>
             </Link>
           </div>
         </div>
@@ -47,10 +38,11 @@ export default function Hero() {
         <div className ="flex-1">
           <Image
             src="/images/dog.jpg"
-            alt="Dog Grooming"
+            alt="Happy dog after grooming"
             width={600}
             height={600}
-            className="rounded-3xl shadow-lg"
+            priority
+            className="w-full rounded-3xl object-cover shadow-xl"
           />
         </div>
 

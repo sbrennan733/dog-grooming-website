@@ -1,18 +1,9 @@
 import Image from "next/image";
-
-const galleryImages = [
-  "/images/gallery/dog2.jpg",
-  "/images/gallery/dog3.jpg",
-  "/images/gallery/dog4.jpg",
-  "/images/gallery/dog5.jpg",
-  "/images/gallery/dog6.jpg",
-  "/images/gallery/dog7.jpg",
-];
+import { galleryImages } from "@/data/gallery";
 
 export default function GalleryPage() {
   return (
     <main className="mx-auto max-w-7xl px-6 py-20">
-
       <h1 className="mb-12 text-center text-5xl font-bold">
         Our Work
       </h1>
@@ -33,7 +24,6 @@ export default function GalleryPage() {
           </div>
         ))}
       </div>
-
     </main>
   );
 }
