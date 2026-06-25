@@ -5,8 +5,8 @@ import Button from "@/components/ui/Button";
 export default function Hero() {
   return (
     <section className="bg-gray-50">
-      <div className="mx-auto flex min-h-[80vh] max-w-7xl items-center gap-12 px-6">
-        <div className="flex-1 max-w-xl">
+      <div className="mx-auto flex min-h-[80vh] max-w-7xl flex-col gap-12 px-6 py-16 md:flex-row md:items-center">
+        <div className="flex-1 max-w-xl text-center md:text-left">
           <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
             Professional Dog Grooming
           </p>
@@ -21,7 +21,7 @@ export default function Hero() {
             look and feel amazing.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <Link href="/booking">
               <Button> Book Appointment </Button>
             </Link>
@@ -42,7 +42,7 @@ export default function Hero() {
             width={600}
             height={600}
             priority
-            className="w-full rounded-3xl object-cover shadow-xl"
+            className="mx-auto w-full max-w-md rounded-3xl object-cover shadow-xl md:max-w-full"
           />
         </div>
 
