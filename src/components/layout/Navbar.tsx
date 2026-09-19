@@ -43,6 +43,13 @@ export default function Navbar() {
           >
             Book
           </Link>
+
+          <Link
+            href="/contact"
+            className="text-gray-700 transition-colors hover:text-black"
+          >
+            Contact
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}

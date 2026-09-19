@@ -39,6 +39,14 @@ export default function MobileMenu({
           Book
         </Link>
 
+        <Link
+          href="/contact"
+          onClick={closeMenu}
+          className="py-3 text-gray-700 hover:text-black"
+        >
+          Contact
+        </Link>
+
       </div>
     </div>
   );
