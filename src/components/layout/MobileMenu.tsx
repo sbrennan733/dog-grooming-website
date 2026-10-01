@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 import { navLinks } from "@/data/navigation";
 
@@ -15,6 +16,7 @@ export default function MobileMenu({
   closeMenu,
 }: MobileMenuProps) {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   if (!isOpen) return null;
 
@@ -39,6 +41,41 @@ export default function MobileMenu({
             </Link>
           );
         })}
+
+        {session?.user.role === "ADMIN" && (
+          <Link
+            href="/admin"
+            onClick={closeMenu}
+            aria-current={pathname.startsWith("/admin") ? "page" : undefined}
+            className={`py-3 hover:text-black ${
+              pathname.startsWith("/admin")
+                ? "font-semibold text-black"
+                : "text-gray-700"
+            }`}
+          >
+            Admin
+          </Link>
+        )}
+
+        {status === "authenticated" ? (
+          <button
+            onClick={() => {
+              closeMenu();
+              signOut();
+            }}
+            className="py-3 text-left text-gray-700 hover:text-black"
+          >
+            Log Out ({session.user.name})
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            onClick={closeMenu}
+            className="py-3 text-gray-700 hover:text-black"
+          >
+            Login
+          </Link>
+        )}
 
       </div>
     </div>
