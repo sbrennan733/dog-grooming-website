@@ -1,29 +1,37 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { galleryImages } from "@/data/gallery";
 
+export const metadata: Metadata = {
+  title: "Gallery",
+  description: "Browse photos of dogs we've groomed.",
+};
+
 export default function GalleryPage() {
   return (
-    <main className="mx-auto max-w-7xl px-6 py-20">
-      <h1 className="mb-12 text-center text-5xl font-bold">
-        Our Work
-      </h1>
+    <div className="bg-white px-6 py-20">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-12 text-center text-5xl font-bold text-gray-900">
+          Our Work
+        </h1>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {galleryImages.map((image) => (
-          <div
-            key={image}
-            className="overflow-hidden rounded-2xl"
-          >
-            <Image
-              src={image}
-              alt="Dog Grooming"
-              width={500}
-              height={500}
-              className="h-80 w-full object-cover transition duration-300 hover:scale-105"
-            />
-          </div>
-        ))}
+        <div className="grid gap-6 md:grid-cols-3">
+          {galleryImages.map((image) => (
+            <div
+              key={image}
+              className="overflow-hidden rounded-2xl"
+            >
+              <Image
+                src={image}
+                alt="Dog Grooming"
+                width={500}
+                height={500}
+                className="h-80 w-full object-cover transition duration-300 hover:scale-105"
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

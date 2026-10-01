@@ -16,7 +16,7 @@ export default function Hero() {
           </h1>
 
           <p className="mb-8 text-lg text-gray-600">
-            Friendly, professional grooming services tailored to your dog's
+            Friendly, professional grooming services tailored to your dog&apos;s
             needs. From full grooms to nail trims, we help your furry friend
             look and feel amazing.
           </p>
