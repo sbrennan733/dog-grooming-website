@@ -1,21 +1,51 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import BookingWizard from "@/components/booking/BookingWizard";
+import Button from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Book Appointment",
-  description: "Booking is coming soon.",
+  description: "Book a grooming appointment for your dog.",
+  robots: { index: false, follow: false },
 };
 
-export default function BookingPage() {
-  return (
-    <div className="bg-white px-6 py-20 text-center">
-      <h1 className="mb-4 text-4xl font-bold text-gray-900">
-        Booking Coming Soon
-      </h1>
+export default async function BookingPage() {
+  const session = await auth();
 
-      <p className="text-lg text-gray-600">
-        Online booking is under construction. Please contact us directly to
-        arrange an appointment in the meantime.
-      </p>
+  const [dogs, services] = await Promise.all([
+    session?.user
+      ? prisma.dog.findMany({
+          where: { ownerId: session.user.id },
+          orderBy: { createdAt: "asc" },
+        })
+      : Promise.resolve([]),
+    prisma.service.findMany({ orderBy: { price: "asc" } }),
+  ]);
+
+  return (
+    <div className="bg-white px-6 py-20">
+      <div className="mx-auto max-w-3xl">
+        <h1 className="mb-8 text-center text-4xl font-bold text-gray-900">
+          Book Appointment
+        </h1>
+
+        {dogs.length === 0 ? (
+          <div className="text-center">
+            <p className="mb-6 text-gray-600">
+              You&apos;ll need to add a dog to your account before booking an
+              appointment.
+            </p>
+
+            <Link href="/customer/dogs/new">
+              <Button>Add a Dog</Button>
+            </Link>
+          </div>
+        ) : (
+          <BookingWizard dogs={dogs} services={services} />
+        )}
+      </div>
     </div>
   );
 }

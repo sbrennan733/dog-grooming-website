@@ -20,12 +20,13 @@ export const authConfig = {
       const pathname = request.nextUrl.pathname;
       const isOnAdmin = pathname.startsWith("/admin");
       const isOnCustomer = pathname.startsWith("/customer");
+      const isOnBooking = pathname.startsWith("/booking");
 
       if (isOnAdmin) {
         return isLoggedIn && auth.user.role === "ADMIN";
       }
 
-      if (isOnCustomer) {
+      if (isOnCustomer || isOnBooking) {
         return isLoggedIn;
       }
 

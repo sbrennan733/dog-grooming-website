@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import DogCard from "@/components/dogs/DogCard";
+import BookingStatusBadge from "@/components/bookings/BookingStatusBadge";
 import Button from "@/components/ui/Button";
 
 export const metadata: Metadata = {
@@ -11,15 +12,26 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+function formatPrice(pence: number): string {
+  return `£${(pence / 100).toFixed(2)}`;
+}
+
 export default async function CustomerDashboardPage() {
   const session = await auth();
 
-  const dogs = session?.user
-    ? await prisma.dog.findMany({
-        where: { ownerId: session.user.id },
-        orderBy: { createdAt: "asc" },
-      })
-    : [];
+  const [dogs, bookings] = session?.user
+    ? await Promise.all([
+        prisma.dog.findMany({
+          where: { ownerId: session.user.id },
+          orderBy: { createdAt: "asc" },
+        }),
+        prisma.booking.findMany({
+          where: { userId: session.user.id },
+          include: { dog: true, service: true },
+          orderBy: { scheduledAt: "asc" },
+        }),
+      ])
+    : [[], []];
 
   return (
     <div className="bg-white px-6 py-20">
@@ -44,6 +56,54 @@ export default async function CustomerDashboardPage() {
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
             {dogs.map((dog) => (
               <DogCard key={dog.id} dog={dog} />
+            ))}
+          </div>
+        )}
+
+        <div className="mt-12 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">My Bookings</h2>
+
+          <Link href="/booking">
+            <Button variant="secondary">Book Appointment</Button>
+          </Link>
+        </div>
+
+        {bookings.length === 0 ? (
+          <p className="mt-6 text-gray-600">
+            You don&apos;t have any bookings yet.
+          </p>
+        ) : (
+          <div className="mt-6 space-y-4">
+            {bookings.map((booking) => (
+              <div
+                key={booking.id}
+                className="flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4"
+              >
+                <div>
+                  <p className="font-semibold text-gray-900">
+                    {booking.service.name} for {booking.dog.name}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {booking.scheduledAt.toLocaleDateString("en-GB", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      timeZone: "UTC",
+                    })}{" "}
+                    at{" "}
+                    {booking.scheduledAt.toLocaleTimeString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "UTC",
+                    })}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Deposit: {formatPrice(booking.depositAtBooking)}
+                  </p>
+                </div>
+
+                <BookingStatusBadge status={booking.status} />
+              </div>
             ))}
           </div>
         )}
