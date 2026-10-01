@@ -17,10 +17,16 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
-      const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
+      const pathname = request.nextUrl.pathname;
+      const isOnAdmin = pathname.startsWith("/admin");
+      const isOnCustomer = pathname.startsWith("/customer");
 
       if (isOnAdmin) {
         return isLoggedIn && auth.user.role === "ADMIN";
+      }
+
+      if (isOnCustomer) {
+        return isLoggedIn;
       }
 
       return true;
