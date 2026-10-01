@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 import MobileMenu from "./MobileMenu";
+import { navLinks } from "@/data/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur">
@@ -23,33 +26,22 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden gap-6 md:flex">
-          <Link
-            href="/"
-            className="text-gray-700 transition-colors hover:text-black"
-          >
-            Home
-          </Link>
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
 
-          <Link
-            href="/gallery"
-            className="text-gray-700 transition-colors hover:text-black"
-          >
-            Gallery
-          </Link>
-
-          <Link
-            href="/booking"
-            className="text-gray-700 transition-colors hover:text-black"
-          >
-            Book
-          </Link>
-
-          <Link
-            href="/contact"
-            className="text-gray-700 transition-colors hover:text-black"
-          >
-            Contact
-          </Link>
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={isActive ? "page" : undefined}
+                className={`transition-colors hover:text-black ${
+                  isActive ? "font-semibold text-black" : "text-gray-700"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Mobile Menu Button */}
