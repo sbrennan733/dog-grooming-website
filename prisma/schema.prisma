@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(CUSTOMER)
+  createdAt    DateTime  @default(now())
+
+  dogs         Dog[]
+  bookings     Booking[]
+}
+
+model Dog {
+  id                    String    @id @default(cuid())
+  name                  String
+  breed                 String
+  age                   Int
+  notes                 String?
+  // null = assessment not yet completed; set when an admin marks it complete.
+  assessmentCompletedAt DateTime?
+  createdAt             DateTime  @default(now())
+
+  ownerId  String
+  owner    User      @relation(fields: [ownerId], references: [id])
+  bookings Booking[]
+}
+
+model Service {
+  id           String  @id @default(cuid())
+  name         String  @unique
+  description  String
+  duration     Int     // minutes
+  price        Int     // pence
+  deposit      Int     // pence
+  // Identifies the mandatory first-visit assessment service.
+  isAssessment Boolean @default(false)
+
+  bookings Booking[]
+}
+
+model Booking {
+  id     String @id @default(cuid())
+  userId String
+  dogId  String
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  scheduledAt DateTime
+  status      BookingStatus @default(PENDING)
+
+  // Snapshot of the service's price/deposit at booking time, so later
+  // price changes don't retroactively affect past bookings.
+  priceAtBooking   Int
+  depositAtBooking Int
+
+  createdAt DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id])
+  dog     Dog      @relation(fields: [dogId], references: [id])
+  payment Payment?
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  bookingId             String        @unique
+  amount                Int
+  currency              String        @default("gbp")
+  stripePaymentIntentId String        @unique
+  status                PaymentStatus @default(PENDING)
+  createdAt             DateTime      @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+// The recurring default schedule: at most one row per day of the week.
+model AvailabilityTemplate {
+  id        String    @id @default(cuid())
+  dayOfWeek DayOfWeek @unique
+  isClosed  Boolean   @default(false)
+  startTime String? // e.g. "09:00"
+  endTime   String? // e.g. "17:00"
+}
+
+// A one-off exception for a specific date (holiday, altered hours, etc).
+// When generating bookable slots for a date, an override always wins over
+// the AvailabilityTemplate for that day of the week.
+model AvailabilityOverride {
+  id        String   @id @default(cuid())
+  date      DateTime @unique
+  isClosed  Boolean  @default(false)
+  startTime String?
+  endTime   String?
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
