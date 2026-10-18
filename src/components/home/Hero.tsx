@@ -1,6 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 
 export default function Hero() {
   return (
@@ -22,15 +21,11 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <Link href="/booking">
-              <Button> Book Appointment </Button>
-            </Link>
+            <ButtonLink href="/booking">Book Appointment</ButtonLink>
 
-            <Link href="/gallery">
-              <Button variant="secondary">
+            <ButtonLink href="/gallery" variant="secondary">
               View Gallery
-              </Button>
-            </Link>
+            </ButtonLink>
           </div>
         </div>
 

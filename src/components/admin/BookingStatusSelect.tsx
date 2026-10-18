@@ -18,11 +18,13 @@ function formatLabel(status: BookingStatus): string {
 interface BookingStatusSelectProps {
   bookingId: string;
   status: BookingStatus;
+  label: string;
 }
 
 export default function BookingStatusSelect({
   bookingId,
   status,
+  label,
 }: BookingStatusSelectProps) {
   const [pending, setPending] = useState(false);
 
@@ -34,6 +36,7 @@ export default function BookingStatusSelect({
 
   return (
     <select
+      aria-label={`Status for ${label}`}
       defaultValue={status}
       onChange={handleChange}
       disabled={pending}

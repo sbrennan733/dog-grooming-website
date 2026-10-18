@@ -29,7 +29,7 @@ export default function CancelBookingButton({
       <button
         type="button"
         onClick={() => setConfirming(true)}
-        className="text-sm font-medium text-gray-700 hover:text-black hover:underline"
+        className="rounded px-2 py-2 text-sm font-medium text-gray-700 hover:text-black hover:underline"
       >
         Cancel booking
       </button>
@@ -44,7 +44,7 @@ export default function CancelBookingButton({
         type="button"
         onClick={handleConfirm}
         disabled={pending}
-        className="font-medium text-red-700 hover:underline disabled:opacity-50"
+        className="rounded px-2 py-2 font-medium text-red-700 hover:underline disabled:opacity-50"
       >
         {pending ? "Cancelling..." : "Yes, cancel"}
       </button>
@@ -53,7 +53,7 @@ export default function CancelBookingButton({
         type="button"
         onClick={() => setConfirming(false)}
         disabled={pending}
-        className="font-medium text-gray-700 hover:underline"
+        className="rounded px-2 py-2 font-medium text-gray-700 hover:underline"
       >
         Keep it
       </button>

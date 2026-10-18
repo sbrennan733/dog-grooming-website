@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 
 export const metadata: Metadata = {
   title: "Booking Received",
@@ -20,9 +19,7 @@ export default function BookingConfirmationPage() {
         deposit.
       </p>
 
-      <Link href="/customer">
-        <Button>View My Account</Button>
-      </Link>
+      <ButtonLink href="/customer">View My Account</ButtonLink>
     </div>
   );
 }

@@ -30,16 +30,15 @@ export default function FormField({
         {...props}
       />
 
-      {errors?.map((error) => (
-        <p
-          key={error}
-          id={errorId}
-          role="alert"
-          className="mt-1 text-sm text-red-600"
-        >
-          {error}
-        </p>
-      ))}
+      {errorId && (
+        <div id={errorId} role="alert">
+          {errors?.map((error) => (
+            <p key={error} className="mt-1 text-sm text-red-600">
+              {error}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

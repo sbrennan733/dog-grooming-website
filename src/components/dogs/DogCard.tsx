@@ -21,7 +21,7 @@ export default function DogCard({ dog }: DogCardProps) {
 
         <Link
           href={`/customer/dogs/${dog.id}/edit`}
-          className="shrink-0 text-sm font-medium text-gray-900 hover:underline"
+          className="-mr-2 -mt-1 shrink-0 rounded px-2 py-2 text-sm font-medium text-gray-900 hover:underline"
         >
           Edit
         </Link>

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import BookingWizard from "@/components/booking/BookingWizard";
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 
 export const metadata: Metadata = {
   title: "Book Appointment",
@@ -38,9 +37,7 @@ export default async function BookingPage() {
               appointment.
             </p>
 
-            <Link href="/customer/dogs/new">
-              <Button>Add a Dog</Button>
-            </Link>
+            <ButtonLink href="/customer/dogs/new">Add a Dog</ButtonLink>
           </div>
         ) : (
           <BookingWizard dogs={dogs} services={services} />

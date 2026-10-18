@@ -98,6 +98,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
             <button
               key={dog.id}
               type="button"
+              aria-pressed={dogId === dog.id}
               onClick={() => handleSelectDog(dog.id)}
               className={`rounded-xl border p-4 text-left transition ${
                 dogId === dog.id
@@ -135,6 +136,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               <button
                 key={service.id}
                 type="button"
+                aria-pressed={serviceId === service.id}
                 onClick={() => handleSelectService(service.id)}
                 className={`rounded-xl border p-4 text-left transition ${
                   serviceId === service.id
@@ -160,7 +162,15 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
             3. Select a Date &amp; Time
           </h2>
 
+          <label
+            htmlFor="booking-date"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Date
+          </label>
+
           <input
+            id="booking-date"
             type="date"
             min={todayStr}
             value={date}
@@ -171,11 +181,11 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
           {date && (
             <div className="mt-4">
               {loadingSlots ? (
-                <p className="text-sm text-gray-600">
+                <p role="status" className="text-sm text-gray-600">
                   Checking available times...
                 </p>
               ) : slots.length === 0 ? (
-                <p className="text-sm text-gray-600">
+                <p role="status" className="text-sm text-gray-600">
                   No available times on this date. Please try another day.
                 </p>
               ) : (
@@ -184,6 +194,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                     <button
                       key={slot}
                       type="button"
+                      aria-pressed={time === slot}
                       onClick={() => setTime(slot)}
                       className={`rounded-lg border px-4 py-2 text-sm transition ${
                         time === slot

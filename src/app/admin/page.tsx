@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import BookingStatusSelect from "@/components/admin/BookingStatusSelect";
 import MarkAssessmentButton from "@/components/admin/MarkAssessmentButton";
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 
 export const metadata: Metadata = {
@@ -28,9 +27,7 @@ export default async function AdminPage() {
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-4xl font-bold text-gray-900">Bookings</h1>
 
-          <Link href="/admin/availability">
-            <Button variant="secondary">Manage Availability</Button>
-          </Link>
+          <ButtonLink href="/admin/availability" variant="secondary">Manage Availability</ButtonLink>
         </div>
 
         {bookings.length === 0 ? (
@@ -80,12 +77,16 @@ export default async function AdminPage() {
                       <BookingStatusSelect
                         bookingId={booking.id}
                         status={booking.status}
+                        label={`${booking.user.name}, ${booking.dog.name}`}
                       />
                     </td>
                     <td className="py-3 pr-4">
                       {booking.service.isAssessment &&
                         !booking.dog.assessmentCompletedAt && (
-                          <MarkAssessmentButton dogId={booking.dog.id} />
+                          <MarkAssessmentButton
+                            dogId={booking.dog.id}
+                            dogName={booking.dog.name}
+                          />
                         )}
                     </td>
                   </tr>

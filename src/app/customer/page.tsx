@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import DogCard from "@/components/dogs/DogCard";
 import BookingStatusBadge from "@/components/bookings/BookingStatusBadge";
 import CancelBookingButton from "@/components/bookings/CancelBookingButton";
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 
 export const metadata: Metadata = {
@@ -46,9 +45,7 @@ export default async function CustomerDashboardPage() {
         <div className="mt-12 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">My Dogs</h2>
 
-          <Link href="/customer/dogs/new">
-            <Button>Add a Dog</Button>
-          </Link>
+          <ButtonLink href="/customer/dogs/new">Add a Dog</ButtonLink>
         </div>
 
         {dogs.length === 0 ? (
@@ -66,9 +63,7 @@ export default async function CustomerDashboardPage() {
         <div className="mt-12 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">My Bookings</h2>
 
-          <Link href="/booking">
-            <Button variant="secondary">Book Appointment</Button>
-          </Link>
+          <ButtonLink href="/booking" variant="secondary">Book Appointment</ButtonLink>
         </div>
 
         {bookings.length === 0 ? (

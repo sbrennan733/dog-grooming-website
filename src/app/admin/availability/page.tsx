@@ -72,6 +72,7 @@ export default async function AvailabilityPage() {
                   <input
                     type="checkbox"
                     name={`${day}-closed`}
+                    aria-label={`${DAY_LABELS[day]} closed`}
                     defaultChecked={existing?.isClosed ?? true}
                   />
                   Closed
@@ -82,6 +83,7 @@ export default async function AvailabilityPage() {
                   <input
                     type="time"
                     name={`${day}-start`}
+                    aria-label={`${DAY_LABELS[day]} opening time`}
                     defaultValue={existing?.startTime ?? "09:00"}
                     className="rounded-lg border border-gray-300 px-2 py-1"
                   />
@@ -92,6 +94,7 @@ export default async function AvailabilityPage() {
                   <input
                     type="time"
                     name={`${day}-end`}
+                    aria-label={`${DAY_LABELS[day]} closing time`}
                     defaultValue={existing?.endTime ?? "17:00"}
                     className="rounded-lg border border-gray-300 px-2 py-1"
                   />
@@ -141,7 +144,7 @@ export default async function AvailabilityPage() {
                 <form action={deleteDateOverride.bind(null, override.id)}>
                   <button
                     type="submit"
-                    className="text-sm font-medium text-gray-900 hover:underline"
+                    className="rounded px-2 py-2 text-sm font-medium text-gray-900 hover:underline"
                   >
                     Remove
                   </button>
