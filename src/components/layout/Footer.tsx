@@ -2,8 +2,11 @@ import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { businessInfo } from "@/data/business";
 import { navLinks } from "@/data/navigation";
+import { getWeeklyOpeningHours } from "@/lib/opening-hours";
 
-export default function Footer() {
+export default async function Footer() {
+  const openingHours = await getWeeklyOpeningHours();
+
   return (
     <footer className="mt-20 bg-gray-900 text-gray-300">
       <div className="mx-auto max-w-7xl px-6 py-16">
@@ -82,11 +85,17 @@ export default function Footer() {
               Opening Hours
             </h3>
 
-            <ul className="space-y-2">
-              <li>Mon - Fri: 09:00 - 17:00</li>
-              <li>Saturday: 09:00 - 13:00</li>
-              <li>Sunday: Closed</li>
-            </ul>
+            {openingHours.length === 0 ? (
+              <p>Please get in touch for our opening hours.</p>
+            ) : (
+              <ul className="space-y-2">
+                {openingHours.map((line) => (
+                  <li key={line.label}>
+                    {line.label}: {line.hours}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
         </div>

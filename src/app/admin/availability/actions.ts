@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth-guards";
+import { OPENING_HOURS_TAG } from "@/lib/opening-hours";
 import { prisma } from "@/lib/prisma";
 import {
   addDays,
@@ -48,6 +49,8 @@ export async function updateWeeklyAvailability(formData: FormData) {
     });
   }
 
+  // The Footer shows these weekly hours on every page.
+  updateTag(OPENING_HOURS_TAG);
   revalidatePath("/admin/availability");
 }
 
