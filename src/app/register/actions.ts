@@ -3,6 +3,7 @@
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmailSafely } from "@/lib/email-verification";
 import { registerSchema, type RegisterFormState } from "@/lib/validations/auth";
 
 export async function registerUser(
@@ -33,9 +34,17 @@ export async function registerUser(
 
   const passwordHash = await bcrypt.hash(password, 10);
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: { name, email, passwordHash },
   });
 
-  redirect("/login");
+  // A mail problem must not block sign-up; the check-email page tells the
+  // user and they can request another email once logged in.
+  const sent = await sendVerificationEmailSafely({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  });
+
+  redirect(sent ? "/register/check-email" : "/register/check-email?sent=false");
 }
