@@ -8,7 +8,7 @@ export default async function Footer() {
   const openingHours = await getWeeklyOpeningHours();
 
   return (
-    <footer className="mt-20 bg-gray-900 text-gray-300">
+    <footer className="mt-20 rounded-t-[2.5rem] bg-footer text-footer-text">
       <div className="mx-auto max-w-7xl px-6 py-16">
 
         {/* Top Section */}
@@ -16,7 +16,7 @@ export default async function Footer() {
 
           {/* Business */}
           <div>
-            <h2 className="mb-4 text-2xl font-bold text-white">
+            <h2 className="mb-4 text-2xl text-white">
               {businessInfo.name}
             </h2>
 
@@ -28,7 +28,7 @@ export default async function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">
+            <h3 className="mb-4 text-lg text-white">
               Navigation
             </h3>
 
@@ -48,7 +48,7 @@ export default async function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">
+            <h3 className="mb-4 text-lg text-white">
               Contact
             </h3>
 
@@ -81,7 +81,7 @@ export default async function Footer() {
           {/* Hours */}
 
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">
+            <h3 className="mb-4 text-lg text-white">
               Opening Hours
             </h3>
 
@@ -102,7 +102,7 @@ export default async function Footer() {
 
         {/* Bottom */}
 
-        <div className="mt-12 border-t border-gray-700 pt-6 text-center text-sm">
+        <div className="mt-12 border-t border-white/15 pt-6 text-center text-sm">
           © {new Date().getFullYear()} {businessInfo.name}. All rights
           reserved.
         </div>

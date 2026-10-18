@@ -4,11 +4,11 @@ import { businessInfo } from "@/data/business";
 export default function ContactInfo() {
   return (
     <div>
-      <h2 className="mb-6 text-3xl font-bold text-gray-900">
+      <h2 className="mb-6 text-3xl text-ink">
         Contact Information
       </h2>
 
-      <p className="mb-8 text-lg leading-relaxed text-gray-600">
+      <p className="mb-8 text-lg leading-relaxed text-muted">
         {businessInfo.description}
       </p>
 
@@ -18,17 +18,17 @@ export default function ContactInfo() {
         <div className="flex items-start gap-4">
           <Phone
             size={22}
-            className="mt-1 shrink-0 text-gray-700"
+            className="mt-1 shrink-0 text-brand"
           />
 
           <div>
-            <h3 className="font-semibold text-gray-900">
+            <h3 className="text-ink">
               Phone
             </h3>
 
             <a
               href={`tel:${businessInfo.contact.phone}`}
-              className="text-gray-600 transition-colors hover:text-black"
+              className="text-muted transition-colors hover:text-brand"
             >
               {businessInfo.contact.phone}
             </a>
@@ -39,17 +39,17 @@ export default function ContactInfo() {
         <div className="flex items-start gap-4">
           <Mail
             size={22}
-            className="mt-1 shrink-0 text-gray-700"
+            className="mt-1 shrink-0 text-brand"
           />
 
           <div>
-            <h3 className="font-semibold text-gray-900">
+            <h3 className="text-ink">
               Email
             </h3>
 
             <a
               href={`mailto:${businessInfo.contact.email}`}
-              className="text-gray-600 transition-colors hover:text-black"
+              className="text-muted transition-colors hover:text-brand"
             >
               {businessInfo.contact.email}
             </a>
@@ -60,15 +60,15 @@ export default function ContactInfo() {
         <div className="flex items-start gap-4">
           <MapPin
             size={22}
-            className="mt-1 shrink-0 text-gray-700"
+            className="mt-1 shrink-0 text-brand"
           />
 
           <div>
-            <h3 className="font-semibold text-gray-900">
+            <h3 className="text-ink">
               Location
             </h3>
 
-            <p className="text-gray-600">
+            <p className="text-muted">
               {businessInfo.contact.address}
             </p>
           </div>

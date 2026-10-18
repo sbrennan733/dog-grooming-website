@@ -3,6 +3,10 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Button from "@/components/ui/Button";
+import {
+  inputClassName as inputStyles,
+  labelClassName as labelStyles,
+} from "@/components/ui/form-styles";
 
 interface ContactFormData {
   name: string;
@@ -46,11 +50,6 @@ function validate(data: ContactFormData): ContactFormErrors {
   return errors;
 }
 
-const inputStyles =
-  "w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:border-black focus:outline-none focus:ring-1 focus:ring-black";
-
-const labelStyles = "mb-1 block font-medium text-gray-900";
-
 export default function ContactForm() {
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
   const [errors, setErrors] = useState<ContactFormErrors>({});
@@ -85,13 +84,13 @@ export default function ContactForm() {
   if (isSubmitted) {
     return (
       <div>
-        <h2 className="mb-6 text-3xl font-bold text-gray-900">
+        <h2 className="mb-6 text-3xl text-ink">
           Send a Message
         </h2>
 
         <div
           role="status"
-          className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-gray-700"
+          className="rounded-2xl bg-ok-soft p-6 text-ok-ink"
         >
           Thanks for reaching out — we&apos;ll get back to you as soon as
           possible.
@@ -102,7 +101,7 @@ export default function ContactForm() {
 
   return (
     <div>
-      <h2 className="mb-6 text-3xl font-bold text-gray-900">
+      <h2 className="mb-6 text-3xl text-ink">
         Send a Message
       </h2>
 
@@ -126,7 +125,7 @@ export default function ContactForm() {
           />
 
           {errors.name && (
-            <p id="name-error" role="alert" className="mt-1 text-sm text-red-600">
+            <p id="name-error" role="alert" className="mt-1 text-sm text-danger">
               {errors.name}
             </p>
           )}
@@ -151,7 +150,7 @@ export default function ContactForm() {
           />
 
           {errors.email && (
-            <p id="email-error" role="alert" className="mt-1 text-sm text-red-600">
+            <p id="email-error" role="alert" className="mt-1 text-sm text-danger">
               {errors.email}
             </p>
           )}
@@ -175,7 +174,7 @@ export default function ContactForm() {
           />
 
           {errors.subject && (
-            <p id="subject-error" role="alert" className="mt-1 text-sm text-red-600">
+            <p id="subject-error" role="alert" className="mt-1 text-sm text-danger">
               {errors.subject}
             </p>
           )}
@@ -199,7 +198,7 @@ export default function ContactForm() {
           />
 
           {errors.message && (
-            <p id="message-error" role="alert" className="mt-1 text-sm text-red-600">
+            <p id="message-error" role="alert" className="mt-1 text-sm text-danger">
               {errors.message}
             </p>
           )}

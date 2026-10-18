@@ -4,16 +4,16 @@ import { galleryImages } from "@/data/gallery";
 
 export default function GalleryPreview() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-background py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-12 flex items-center justify-between">
-          <h2 className="text-4xl font-bold">
+          <h2 className="text-4xl">
             Gallery
           </h2>
 
           <Link
             href="/gallery"
-            className="font-medium hover:underline"
+            className="font-bold text-brand hover:underline"
           >
             View Full Gallery →
           </Link>
@@ -23,7 +23,7 @@ export default function GalleryPreview() {
           {galleryImages.slice(0, 3).map((image, index) => (
             <div
               key={image}
-              className="overflow-hidden rounded-2xl"
+              className="overflow-hidden rounded-3xl shadow-soft"
             >
               <Image
                 src={image}

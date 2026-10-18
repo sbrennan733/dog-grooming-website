@@ -51,7 +51,7 @@ export default function RegisterForm() {
       />
 
       {state?.message && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-danger">
           {state.message}
         </p>
       )}
@@ -60,11 +60,11 @@ export default function RegisterForm() {
         {pending ? "Creating Account..." : "Create Account"}
       </Button>
 
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-medium text-gray-900 hover:underline"
+          className="font-bold text-brand hover:underline"
         >
           Log in
         </Link>

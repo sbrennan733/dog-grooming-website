@@ -21,7 +21,7 @@ export default function MobileMenu({
   if (!isOpen) return null;
 
   return (
-    <div id="mobile-menu" className="border-t bg-white md:hidden">
+    <div id="mobile-menu" className="border-t border-line bg-background md:hidden">
       <div className="flex flex-col px-6 py-4">
 
         {navLinks.map((link) => {
@@ -33,8 +33,8 @@ export default function MobileMenu({
               href={link.href}
               onClick={closeMenu}
               aria-current={isActive ? "page" : undefined}
-              className={`py-3 hover:text-black ${
-                isActive ? "font-semibold text-black" : "text-gray-700"
+              className={`py-3.5 text-lg hover:text-brand ${
+                isActive ? "font-bold text-ink" : "text-muted"
               }`}
             >
               {link.label}
@@ -47,10 +47,10 @@ export default function MobileMenu({
             href="/admin"
             onClick={closeMenu}
             aria-current={pathname.startsWith("/admin") ? "page" : undefined}
-            className={`py-3 hover:text-black ${
+            className={`py-3.5 text-lg hover:text-brand ${
               pathname.startsWith("/admin")
-                ? "font-semibold text-black"
-                : "text-gray-700"
+                ? "font-bold text-ink"
+                : "text-muted"
             }`}
           >
             Admin
@@ -63,17 +63,17 @@ export default function MobileMenu({
               closeMenu();
               signOut();
             }}
-            className="py-3 text-left text-gray-700 hover:text-black"
+            className="py-3.5 text-left text-lg text-muted hover:text-brand"
           >
-            Log Out ({session.user.name})
+            Log out ({session.user.name})
           </button>
         ) : (
           <Link
             href="/login"
             onClick={closeMenu}
-            className="py-3 text-gray-700 hover:text-black"
+            className="py-3.5 text-lg font-bold text-brand"
           >
-            Login
+            Log in
           </Link>
         )}
 

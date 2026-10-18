@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function GalleryPage() {
   return (
-    <div className="bg-white px-6 py-20">
+    <div className="bg-background px-6 py-20">
       <div className="mx-auto max-w-7xl">
-        <h1 className="mb-12 text-center text-5xl font-bold text-gray-900">
+        <h1 className="mb-12 text-center text-5xl text-ink">
           Our Work
         </h1>
 
@@ -19,7 +19,7 @@ export default function GalleryPage() {
           {galleryImages.map((image, index) => (
             <div
               key={image}
-              className="overflow-hidden rounded-2xl"
+              className="overflow-hidden rounded-3xl shadow-soft"
             >
               <Image
                 src={image}

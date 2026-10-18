@@ -4,10 +4,21 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X } from "lucide-react";
+import { Menu, PawPrint, X } from "lucide-react";
 
 import MobileMenu from "./MobileMenu";
+import ButtonLink from "@/components/ui/ButtonLink";
+import { businessInfo } from "@/data/business";
 import { navLinks } from "@/data/navigation";
+
+function linkClassName(isActive: boolean): string {
+  const base =
+    "relative py-1 font-semibold transition-colors hover:text-brand";
+  const active =
+    "text-ink after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-accent";
+
+  return `${base} ${isActive ? active : "text-muted"}`;
+}
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,75 +28,72 @@ export default function Navbar() {
   return (
     <nav
       aria-label="Main"
-      className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur"
+      className="sticky top-0 z-50 border-b border-line bg-background/90 backdrop-blur"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-bold text-gray-900"
+          className="flex items-center gap-2.5 font-heading text-2xl font-semibold text-ink"
         >
-          Paws & Pamper
+          <PawPrint
+            size={28}
+            aria-hidden="true"
+            className="text-brand"
+            fill="currentColor"
+          />
+          {businessInfo.name}
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={isActive ? "page" : undefined}
-                className={`transition-colors hover:text-black ${
-                  isActive ? "font-semibold text-black" : "text-gray-700"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+        <div className="hidden items-center gap-7 md:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={pathname === link.href ? "page" : undefined}
+              className={linkClassName(pathname === link.href)}
+            >
+              {link.label}
+            </Link>
+          ))}
 
           {session?.user.role === "ADMIN" && (
             <Link
               href="/admin"
               aria-current={pathname.startsWith("/admin") ? "page" : undefined}
-              className={`transition-colors hover:text-black ${
-                pathname.startsWith("/admin")
-                  ? "font-semibold text-black"
-                  : "text-gray-700"
-              }`}
+              className={linkClassName(pathname.startsWith("/admin"))}
             >
               Admin
             </Link>
           )}
 
-          {status === "authenticated" ? (
+          {status === "loading" ? (
+            // Same footprint as the button, so the nav does not jump or flash
+            // "Log in" at a signed-in user while the session is being read.
+            <span aria-hidden="true" className="inline-block h-9 w-24" />
+          ) : status === "authenticated" ? (
             <>
-              <span className="text-gray-700">{session.user.name}</span>
+              <span className="font-semibold text-ink">{session.user.name}</span>
               <button
                 onClick={() => signOut()}
-                className="text-gray-700 transition-colors hover:text-black"
+                className="rounded-full border-2 border-line px-5 py-2 text-sm font-bold text-ink transition hover:bg-surface-alt"
               >
-                Log Out
+                Log out
               </button>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="text-gray-700 transition-colors hover:text-black"
-            >
-              Login
-            </Link>
+            <ButtonLink href="/login" className="px-6 py-2 text-sm">
+              Log in
+            </ButtonLink>
           )}
         </div>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 md:hidden"
+          className="rounded-full p-2.5 text-ink transition-colors hover:bg-surface-alt md:hidden"
           aria-label="Toggle navigation menu"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"

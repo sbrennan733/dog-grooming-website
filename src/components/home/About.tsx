@@ -3,16 +3,16 @@ import { Check } from "lucide-react";
 
 export default function About() {
   return (
-    <section className="bg-gray-50 py-24">
+    <section className="bg-surface-alt py-24">
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Section heading */}
         <div className="mb-16 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
-            About Us
+          <p className="mb-4 inline-block rounded-full bg-accent-soft px-4 py-1.5 text-sm font-bold text-accent-ink">
+            About us
           </p>
 
-          <h2 className="text-4xl font-bold text-gray-900 md:text-5xl">
+          <h2 className="text-4xl text-ink md:text-5xl">
             Caring For Your Best Friend
           </h2>
         </div>
@@ -21,7 +21,7 @@ export default function About() {
         <div className="grid items-center gap-12 md:grid-cols-2">
 
           {/* Image */}
-          <div className="overflow-hidden rounded-3xl">
+          <div className="overflow-hidden rounded-[2.25rem] shadow-lift">
             <Image
               src="/images/dog.jpg"
               alt="Dog being groomed"
@@ -33,17 +33,17 @@ export default function About() {
 
           {/* Information */}
           <div>
-            <h3 className="mb-6 text-3xl font-bold text-gray-900">
+            <h3 className="mb-6 text-3xl text-ink">
               Meet Your Groomer
             </h3>
 
-            <p className="mb-6 text-lg leading-relaxed text-gray-600">
+            <p className="mb-6 text-lg leading-relaxed text-muted">
               Welcome to Paws & Pamper. We provide friendly, professional
               grooming services designed to keep your dog looking and feeling
               their best.
             </p>
 
-            <p className="mb-8 text-lg leading-relaxed text-gray-600">
+            <p className="mb-8 text-lg leading-relaxed text-muted">
               Every dog is treated as an individual, with their comfort,
               wellbeing and personality taken into consideration throughout
               their visit.
@@ -56,15 +56,15 @@ export default function About() {
               <div className="flex items-start gap-3">
                 <Check
                   size={20}
-                  className="mt-1 shrink-0 text-gray-700"
+                  className="mt-1 shrink-0 text-brand"
                 />
 
                 <div>
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="text-ink">
                     Professional Care
                   </h4>
 
-                  <p className="text-gray-600">
+                  <p className="text-muted">
                     A calm and caring approach tailored to every dog.
                   </p>
                 </div>
@@ -74,15 +74,15 @@ export default function About() {
               <div className="flex items-start gap-3">
                 <Check
                   size={20}
-                  className="mt-1 shrink-0 text-gray-700"
+                  className="mt-1 shrink-0 text-brand"
                 />
 
                 <div>
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="text-ink">
                     One-to-One Attention
                   </h4>
 
-                  <p className="text-gray-600">
+                  <p className="text-muted">
                     Individual appointments so your dog receives dedicated
                     attention.
                   </p>
@@ -93,15 +93,15 @@ export default function About() {
               <div className="flex items-start gap-3">
                 <Check
                   size={20}
-                  className="mt-1 shrink-0 text-gray-700"
+                  className="mt-1 shrink-0 text-brand"
                 />
 
                 <div>
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="text-ink">
                     Dog-Focused Service
                   </h4>
 
-                  <p className="text-gray-600">
+                  <p className="text-muted">
                     We aim to make every grooming experience as comfortable
                     and stress-free as possible.
                   </p>

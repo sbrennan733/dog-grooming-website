@@ -62,7 +62,7 @@ export default function LoginForm() {
       />
 
       {errorMessage && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-danger">
           {errorMessage}
         </p>
       )}
@@ -71,11 +71,11 @@ export default function LoginForm() {
         {pending ? "Logging In..." : "Log In"}
       </Button>
 
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted">
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="font-medium text-gray-900 hover:underline"
+          className="font-bold text-brand hover:underline"
         >
           Create one
         </Link>
