@@ -3,11 +3,13 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 export type ButtonVariant = "primary" | "secondary";
 
 const baseStyles =
-  "inline-flex items-center justify-center rounded-lg px-6 py-3 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center rounded-full px-7 py-3 font-bold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-black text-white hover:bg-gray-800",
-  secondary: "border border-gray-300 bg-white text-gray-900 hover:bg-gray-100",
+  primary:
+    "bg-brand text-on-brand shadow-[0_6px_16px_rgb(15_118_110/0.28)] hover:-translate-y-0.5 hover:bg-brand-hover",
+  secondary:
+    "border-2 border-line bg-surface text-ink hover:-translate-y-0.5 hover:bg-surface-alt",
 };
 
 export function buttonClassName(

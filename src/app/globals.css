@@ -1,23 +1,97 @@
 @import "tailwindcss";
 
-/* The site is designed as a light theme only, so the page background and
-   native controls (date pickers, scrollbars) stay light regardless of the
-   visitor's OS colour-scheme preference. */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  color-scheme: light;
+/*
+  Design tokens. Components use these semantic names (bg-background,
+  text-ink, bg-brand, ...) rather than raw colours, so a rebrand is a change
+  to the values below. Every text/background pairing here was checked for
+  WCAG AA contrast (4.5:1 for text, 3:1 for form-control borders).
+*/
+@theme {
+  /* Surfaces */
+  --color-background: #fbf7f2;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4ece2;
+
+  /* Text */
+  --color-ink: #2b2622;
+  --color-muted: #6b625b;
+
+  /* Brand (deep teal) */
+  --color-brand: #0f766e;
+  --color-brand-hover: #115e59;
+  --color-brand-soft: #d8f1ec;
+  --color-on-brand: #ffffff;
+
+  /* Accent (soft coral). accent-ink is the text-safe version. */
+  --color-accent: #f4845f;
+  --color-accent-soft: #fde7de;
+  --color-accent-ink: #a8432b;
+
+  /* Lines and form-control borders */
+  --color-line: #eadfd2;
+  --color-line-input: #9c8f82;
+
+  /* Feedback and status */
+  --color-danger: #b42318;
+  --color-warn-soft: #fdefc7;
+  --color-warn-ink: #7a4b00;
+  --color-info-soft: #e1eefb;
+  --color-info-ink: #1d4e89;
+  --color-ok-soft: #d8f1ec;
+  --color-ok-ink: #0b5c55;
+  --color-neutral-soft: #ede6dd;
+  --color-neutral-ink: #5b5249;
+
+  /* Footer */
+  --color-footer: #2b2622;
+  --color-footer-text: #d9cfc4;
+
+  --shadow-soft: 0 8px 24px rgb(120 85 50 / 0.08);
+  --shadow-lift: 0 14px 32px rgb(120 85 50 / 0.14);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+  --font-heading: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* The site is a light theme only, so the page and native controls (date
+   pickers, scrollbars) stay light regardless of the visitor's OS setting. */
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  /* Tailwind v4 defaults borders to currentColor; use the soft line colour
+     so a plain `border` is quiet rather than a dark outline. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-line);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--color-brand);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
 }
