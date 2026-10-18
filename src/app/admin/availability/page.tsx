@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import Button from "@/components/ui/Button";
 import OverrideForm from "@/components/admin/OverrideForm";
@@ -32,6 +33,8 @@ const DAY_LABELS: Record<DayOfWeek, string> = {
 };
 
 export default async function AvailabilityPage() {
+  await requireAdmin();
+
   const today = getTodayInBusinessZone();
 
   const [templates, overrides] = await Promise.all([

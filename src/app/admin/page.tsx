@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import BookingStatusSelect from "@/components/admin/BookingStatusSelect";
 import MarkAssessmentButton from "@/components/admin/MarkAssessmentButton";
@@ -16,6 +17,8 @@ function formatPrice(pence: number): string {
 }
 
 export default async function AdminPage() {
+  await requireAdmin();
+
   const bookings = await prisma.booking.findMany({
     include: { user: true, dog: true, service: true },
     orderBy: { scheduledAt: "asc" },
