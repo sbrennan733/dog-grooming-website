@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Check } from "lucide-react";
+import { businessInfo } from "@/data/business";
 
 export default function About() {
   return (
@@ -38,7 +39,7 @@ export default function About() {
             </h3>
 
             <p className="mb-6 text-lg leading-relaxed text-muted">
-              Welcome to Paws & Pamper. We provide friendly, professional
+              Welcome to {businessInfo.name}. We provide friendly, professional
               grooming services designed to keep your dog looking and feeling
               their best.
             </p>

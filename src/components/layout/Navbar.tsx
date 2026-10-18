@@ -30,12 +30,12 @@ export default function Navbar() {
       aria-label="Main"
       className="sticky top-0 z-50 border-b border-line bg-background/90 backdrop-blur"
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
 
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-heading text-2xl font-semibold text-ink"
+          className="flex items-center gap-2 whitespace-nowrap font-heading text-xl font-semibold text-ink sm:gap-2.5 sm:text-2xl"
         >
           <PawPrint
             size={28}

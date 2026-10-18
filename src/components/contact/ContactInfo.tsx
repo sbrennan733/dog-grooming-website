@@ -1,4 +1,5 @@
 import { Mail, MapPin, Phone } from "lucide-react";
+import EmailText from "@/components/ui/EmailText";
 import { businessInfo } from "@/data/business";
 
 export default function ContactInfo() {
@@ -21,7 +22,7 @@ export default function ContactInfo() {
             className="mt-1 shrink-0 text-brand"
           />
 
-          <div>
+          <div className="min-w-0">
             <h3 className="text-ink">
               Phone
             </h3>
@@ -42,16 +43,16 @@ export default function ContactInfo() {
             className="mt-1 shrink-0 text-brand"
           />
 
-          <div>
+          <div className="min-w-0">
             <h3 className="text-ink">
               Email
             </h3>
 
             <a
               href={`mailto:${businessInfo.contact.email}`}
-              className="text-muted transition-colors hover:text-brand"
+              className="[overflow-wrap:anywhere] text-muted transition-colors hover:text-brand"
             >
-              {businessInfo.contact.email}
+              <EmailText email={businessInfo.contact.email} />
             </a>
           </div>
         </div>
@@ -63,7 +64,7 @@ export default function ContactInfo() {
             className="mt-1 shrink-0 text-brand"
           />
 
-          <div>
+          <div className="min-w-0">
             <h3 className="text-ink">
               Location
             </h3>

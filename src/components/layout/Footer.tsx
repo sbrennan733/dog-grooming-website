@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
+import EmailText from "@/components/ui/EmailText";
 import { businessInfo } from "@/data/business";
 import { navLinks } from "@/data/navigation";
 import { getWeeklyOpeningHours } from "@/lib/opening-hours";
@@ -66,9 +67,9 @@ export default async function Footer() {
                 <Mail size={16} aria-hidden="true" className="shrink-0" />
                 <a
                   href={`mailto:${businessInfo.contact.email}`}
-                  className="hover:text-white"
+                  className="min-w-0 [overflow-wrap:anywhere] hover:text-white"
                 >
-                  {businessInfo.contact.email}
+                  <EmailText email={businessInfo.contact.email} />
                 </a>
               </li>
               <li className="flex items-center gap-2">
