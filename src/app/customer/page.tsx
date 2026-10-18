@@ -4,7 +4,9 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import DogCard from "@/components/dogs/DogCard";
 import BookingStatusBadge from "@/components/bookings/BookingStatusBadge";
+import CancelBookingButton from "@/components/bookings/CancelBookingButton";
 import Button from "@/components/ui/Button";
+import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 
 export const metadata: Metadata = {
   title: "My Account",
@@ -18,6 +20,7 @@ function formatPrice(pence: number): string {
 
 export default async function CustomerDashboardPage() {
   const session = await auth();
+  const now = new Date();
 
   const [dogs, bookings] = session?.user
     ? await Promise.all([
@@ -88,13 +91,13 @@ export default async function CustomerDashboardPage() {
                       weekday: "long",
                       day: "numeric",
                       month: "long",
-                      timeZone: "UTC",
+                      timeZone: BUSINESS_TIME_ZONE,
                     })}{" "}
                     at{" "}
                     {booking.scheduledAt.toLocaleTimeString("en-GB", {
                       hour: "2-digit",
                       minute: "2-digit",
-                      timeZone: "UTC",
+                      timeZone: BUSINESS_TIME_ZONE,
                     })}
                   </p>
                   <p className="text-sm text-gray-600">
@@ -102,7 +105,15 @@ export default async function CustomerDashboardPage() {
                   </p>
                 </div>
 
-                <BookingStatusBadge status={booking.status} />
+                <div className="flex flex-col items-end gap-2">
+                  <BookingStatusBadge status={booking.status} />
+
+                  {(booking.status === "PENDING" ||
+                    booking.status === "CONFIRMED") &&
+                    booking.scheduledAt > now && (
+                      <CancelBookingButton bookingId={booking.id} />
+                    )}
+                </div>
               </div>
             ))}
           </div>
