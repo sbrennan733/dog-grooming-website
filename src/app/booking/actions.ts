@@ -28,6 +28,14 @@ export async function createBooking(
     redirect("/login");
   }
 
+  const account = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { emailVerified: true },
+  });
+  if (!account?.emailVerified) {
+    return { error: "Please confirm your email address before booking." };
+  }
+
   const dog = await prisma.dog.findUnique({ where: { id: input.dogId } });
   if (!dog || dog.ownerId !== session.user.id) {
     return { error: "That dog could not be found on your account." };

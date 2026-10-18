@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import BookingWizard from "@/components/booking/BookingWizard";
 import ButtonLink from "@/components/ui/ButtonLink";
+import VerificationBanner from "@/components/account/VerificationBanner";
 
 export const metadata: Metadata = {
   title: "Book Appointment",
@@ -12,6 +13,13 @@ export const metadata: Metadata = {
 
 export default async function BookingPage() {
   const session = await auth();
+
+  const account = session?.user
+    ? await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { email: true, emailVerified: true },
+      })
+    : null;
 
   const [dogs, services] = await Promise.all([
     session?.user
@@ -30,7 +38,9 @@ export default async function BookingPage() {
           Book Appointment
         </h1>
 
-        {dogs.length === 0 ? (
+        {account && !account.emailVerified ? (
+          <VerificationBanner email={account.email} />
+        ) : dogs.length === 0 ? (
           <div className="text-center">
             <p className="mb-6 text-muted">
               You&apos;ll need to add a dog to your account before booking an
