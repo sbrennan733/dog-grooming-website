@@ -1,4 +1,10 @@
 import { prisma } from "@/lib/prisma";
+import {
+  addDays,
+  getTodayInBusinessZone,
+  getZonedParts,
+  zonedWallTimeToUtc,
+} from "@/lib/timezone";
 import type { DayOfWeek } from "@/generated/prisma/client";
 
 const DAY_NAMES: DayOfWeek[] = [
@@ -81,7 +87,7 @@ export async function getAvailableSlots(
   // The date picker's `min` attribute only stops the UI from offering a
   // past date — it doesn't stop someone calling the Server Action
   // directly, so the past-date rejection has to live here too.
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = getTodayInBusinessZone();
   if (dateStr < todayStr) {
     return [];
   }
@@ -100,27 +106,27 @@ export async function getAvailableSlots(
   const dayEnd = timeStringToMinutes(endTime);
   const duration = service.duration;
 
-  const dayStartDate = parseDateOnly(dateStr);
-  const dayEndDate = new Date(dayStartDate.getTime() + 24 * 60 * 60 * 1000);
+  // The business day runs midnight-to-midnight in local time, which is
+  // not the same as midnight-to-midnight UTC while BST is in effect.
+  const dayStartInstant = zonedWallTimeToUtc(dateStr, "00:00");
+  const dayEndInstant = zonedWallTimeToUtc(addDays(dateStr, 1), "00:00");
 
   const existingBookings = await prisma.booking.findMany({
     where: {
-      scheduledAt: { gte: dayStartDate, lt: dayEndDate },
+      scheduledAt: { gte: dayStartInstant, lt: dayEndInstant },
       status: { not: "CANCELLED" },
     },
     include: { service: true },
   });
 
   const bookedRanges = existingBookings.map((booking) => {
-    const start =
-      booking.scheduledAt.getUTCHours() * 60 +
-      booking.scheduledAt.getUTCMinutes();
+    const { minutes: start } = getZonedParts(booking.scheduledAt);
     return { start, end: start + booking.service.duration };
   });
 
-  const now = new Date();
-  const isToday = dateStr === now.toISOString().slice(0, 10);
-  const nowMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const nowParts = getZonedParts(new Date());
+  const isToday = dateStr === nowParts.date;
+  const nowMinutes = nowParts.minutes;
 
   const slots: string[] = [];
   for (

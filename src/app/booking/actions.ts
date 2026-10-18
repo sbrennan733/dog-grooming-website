@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/availability";
+import { zonedWallTimeToUtc } from "@/lib/timezone";
 
 export async function fetchAvailableSlots(
   date: string,
@@ -58,7 +59,7 @@ export async function createBooking(
     };
   }
 
-  const scheduledAt = new Date(`${input.date}T${input.time}:00.000Z`);
+  const scheduledAt = zonedWallTimeToUtc(input.date, input.time);
 
   await prisma.booking.create({
     data: {

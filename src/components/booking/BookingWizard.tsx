@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import { fetchAvailableSlots, createBooking } from "@/app/booking/actions";
+import { getTodayInBusinessZone } from "@/lib/timezone";
 import type { Dog, Service } from "@/generated/prisma/client";
 
 interface BookingWizardProps {
@@ -37,7 +38,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
     (service) => service.id === serviceId
   );
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = getTodayInBusinessZone();
 
   function handleSelectDog(newDogId: string) {
     setDogId(newDogId);

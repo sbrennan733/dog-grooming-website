@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import BookingStatusSelect from "@/components/admin/BookingStatusSelect";
 import MarkAssessmentButton from "@/components/admin/MarkAssessmentButton";
 import Button from "@/components/ui/Button";
+import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -64,12 +65,12 @@ export default async function AdminPage() {
                       {booking.scheduledAt.toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "short",
-                        timeZone: "UTC",
+                        timeZone: BUSINESS_TIME_ZONE,
                       })}{" "}
                       {booking.scheduledAt.toLocaleTimeString("en-GB", {
                         hour: "2-digit",
                         minute: "2-digit",
-                        timeZone: "UTC",
+                        timeZone: BUSINESS_TIME_ZONE,
                       })}
                     </td>
                     <td className="py-3 pr-4 text-gray-700">
