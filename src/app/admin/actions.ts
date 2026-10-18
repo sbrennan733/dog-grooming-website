@@ -1,18 +1,9 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import type { BookingStatus } from "@/generated/prisma/client";
-
-async function requireAdmin() {
-  const session = await auth();
-  if (session?.user.role !== "ADMIN") {
-    redirect("/login");
-  }
-  return session;
-}
 
 export async function updateBookingStatus(
   bookingId: string,
