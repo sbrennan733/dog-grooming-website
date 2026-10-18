@@ -4,7 +4,7 @@ export default function Services() {
   return (
     <section className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <h2 className="mb-12 text-center text-4xl text-gray-400 font-bold">
+        <h2 className="mb-12 text-center text-4xl text-gray-900 font-bold">
           Our Services
         </h2>
 
@@ -14,7 +14,7 @@ export default function Services() {
               key={service.id}
               className="rounded-2xl  border p-8 shadow-sm transition hover:shadow-lg"
             >
-              <h3 className="mb-4 text-2xl text-gray-400 font-semibold">
+              <h3 className="mb-4 text-2xl text-gray-900 font-semibold">
                 {service.name}
               </h3>
 

@@ -15,7 +15,10 @@ export default function Navbar() {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur">
+    <nav
+      aria-label="Main"
+      className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur"
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         {/* Logo */}
@@ -84,6 +87,8 @@ export default function Navbar() {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 md:hidden"
           aria-label="Toggle navigation menu"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
         >
           {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { businessInfo } from "@/data/business";
+import { navLinks } from "@/data/navigation";
 
 export default function Footer() {
   return (
@@ -11,7 +14,7 @@ export default function Footer() {
           {/* Business */}
           <div>
             <h2 className="mb-4 text-2xl font-bold text-white">
-              Paws & Pamper
+              {businessInfo.name}
             </h2>
 
             <p className="leading-relaxed">
@@ -27,39 +30,48 @@ export default function Footer() {
             </h3>
 
             <ul className="space-y-2">
-
-              <li>
-                <Link href="/" className="hover:text-white">
-                  Home
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/gallery" className="hover:text-white">
-                  Gallery
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/booking" className="hover:text-white">
-                  Book Appointment
-                </Link>
-              </li>
-
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="inline-block py-1 hover:text-white"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact */}
-
           <div>
             <h3 className="mb-4 text-lg font-semibold text-white">
               Contact
             </h3>
 
             <ul className="space-y-2">
-              <li>📞 07XXX XXXXXX</li>
-              <li>✉️ info@pawspamper.co.uk</li>
-              <li>Belfast, Northern Ireland</li>
+              <li className="flex items-center gap-2">
+                <Phone size={16} aria-hidden="true" className="shrink-0" />
+                <a
+                  href={`tel:${businessInfo.contact.phone}`}
+                  className="hover:text-white"
+                >
+                  {businessInfo.contact.phone}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail size={16} aria-hidden="true" className="shrink-0" />
+                <a
+                  href={`mailto:${businessInfo.contact.email}`}
+                  className="hover:text-white"
+                >
+                  {businessInfo.contact.email}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin size={16} aria-hidden="true" className="shrink-0" />
+                {businessInfo.contact.address}
+              </li>
             </ul>
           </div>
 
@@ -82,7 +94,8 @@ export default function Footer() {
         {/* Bottom */}
 
         <div className="mt-12 border-t border-gray-700 pt-6 text-center text-sm">
-          © {new Date().getFullYear()} Paws & Pamper. All rights reserved.
+          © {new Date().getFullYear()} {businessInfo.name}. All rights
+          reserved.
         </div>
 
       </div>

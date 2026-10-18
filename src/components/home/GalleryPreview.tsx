@@ -20,14 +20,14 @@ export default function GalleryPreview() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {galleryImages.slice(0, 3).map((image) => (
+          {galleryImages.slice(0, 3).map((image, index) => (
             <div
               key={image}
               className="overflow-hidden rounded-2xl"
             >
               <Image
                 src={image}
-                alt="Dog Grooming"
+                alt={`Groomed dog, photo ${index + 1}`}
                 width={500}
                 height={500}
                 className="h-80 w-full object-cover transition duration-300 hover:scale-105"

@@ -5,7 +5,7 @@ export default function Testimonials() {
   return (
     <section className="bg-gray-50 py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <h2 className="mb-12 text-center text-4xl font-bold text-gray-400">
+        <h2 className="mb-12 text-center text-4xl font-bold text-gray-900">
           What Our Customers Say
         </h2>
 
