@@ -6,6 +6,7 @@ import BookingStatusBadge from "@/components/bookings/BookingStatusBadge";
 import CancelBookingButton from "@/components/bookings/CancelBookingButton";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
+import { businessInfo } from "@/data/business";
 
 export const metadata: Metadata = {
   title: "My Account",
@@ -96,7 +97,9 @@ export default async function CustomerDashboardPage() {
                     })}
                   </p>
                   <p className="text-sm text-gray-600">
-                    Deposit: {formatPrice(booking.depositAtBooking)}
+                    {businessInfo.payment.depositsEnabled
+                      ? `Deposit: ${formatPrice(booking.depositAtBooking)}`
+                      : `Price: ${formatPrice(booking.priceAtBooking)} (cash at your appointment)`}
                   </p>
                 </div>
 

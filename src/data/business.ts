@@ -12,6 +12,10 @@ export const businessInfo: BusinessInfo = {
     address: "Belfast, Northern Ireland",
   },
 
+  payment: {
+    depositsEnabled: false,
+  },
+
   social: {
     instagram: "#",
     facebook: "#",

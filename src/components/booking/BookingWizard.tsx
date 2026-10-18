@@ -4,6 +4,7 @@ import { useState } from "react";
 import Button from "@/components/ui/Button";
 import { fetchAvailableSlots, createBooking } from "@/app/booking/actions";
 import { getTodayInBusinessZone } from "@/lib/timezone";
+import { businessInfo } from "@/data/business";
 import type { Dog, Service } from "@/generated/prisma/client";
 
 interface BookingWizardProps {
@@ -147,8 +148,9 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                 <p className="font-semibold text-gray-900">{service.name}</p>
                 <p className="text-sm text-gray-600">{service.description}</p>
                 <p className="mt-1 text-sm font-medium text-gray-900">
-                  {formatPrice(service.price)} ({formatPrice(service.deposit)}{" "}
-                  deposit)
+                  {formatPrice(service.price)}
+                  {businessInfo.payment.depositsEnabled &&
+                    ` (${formatPrice(service.deposit)} deposit)`}
                 </p>
               </button>
             ))}
@@ -236,10 +238,25 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               <dd>{time}</dd>
             </div>
             <div className="flex justify-between font-medium text-gray-900">
-              <dt>Deposit due</dt>
-              <dd>{formatPrice(selectedService.deposit)}</dd>
+              {businessInfo.payment.depositsEnabled ? (
+                <>
+                  <dt>Deposit due</dt>
+                  <dd>{formatPrice(selectedService.deposit)}</dd>
+                </>
+              ) : (
+                <>
+                  <dt>Price</dt>
+                  <dd>{formatPrice(selectedService.price)}</dd>
+                </>
+              )}
             </div>
           </dl>
+
+          {!businessInfo.payment.depositsEnabled && (
+            <p className="mb-6 text-sm text-gray-600">
+              Payment is taken in cash at your appointment.
+            </p>
+          )}
 
           {error && (
             <p role="alert" className="mb-4 text-sm text-red-600">

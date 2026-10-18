@@ -5,6 +5,7 @@ import BookingStatusSelect from "@/components/admin/BookingStatusSelect";
 import MarkAssessmentButton from "@/components/admin/MarkAssessmentButton";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
+import { businessInfo } from "@/data/business";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -44,7 +45,10 @@ export default async function AdminPage() {
                   <th className="py-3 pr-4 font-medium">Dog</th>
                   <th className="py-3 pr-4 font-medium">Service</th>
                   <th className="py-3 pr-4 font-medium">Date</th>
-                  <th className="py-3 pr-4 font-medium">Deposit</th>
+                  <th className="py-3 pr-4 font-medium">Price</th>
+                  {businessInfo.payment.depositsEnabled && (
+                    <th className="py-3 pr-4 font-medium">Deposit</th>
+                  )}
                   <th className="py-3 pr-4 font-medium">Status</th>
                   <th className="py-3 pr-4 font-medium">Assessment</th>
                 </tr>
@@ -74,8 +78,13 @@ export default async function AdminPage() {
                       })}
                     </td>
                     <td className="py-3 pr-4 text-gray-700">
-                      {formatPrice(booking.depositAtBooking)}
+                      {formatPrice(booking.priceAtBooking)}
                     </td>
+                    {businessInfo.payment.depositsEnabled && (
+                      <td className="py-3 pr-4 text-gray-700">
+                        {formatPrice(booking.depositAtBooking)}
+                      </td>
+                    )}
                     <td className="py-3 pr-4">
                       <BookingStatusSelect
                         bookingId={booking.id}

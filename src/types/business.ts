@@ -8,6 +8,13 @@ export interface BusinessInfo {
     address: string;
   };
 
+  payment: {
+    // Deposits are stored on every booking but only shown to customers
+    // once online deposit collection (Stripe) exists. Until then payment
+    // is cash at the appointment.
+    depositsEnabled: boolean;
+  };
+
   social: {
     instagram: string;
     facebook: string;

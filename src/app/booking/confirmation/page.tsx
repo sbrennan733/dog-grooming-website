@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ButtonLink from "@/components/ui/ButtonLink";
+import { businessInfo } from "@/data/business";
 
 export const metadata: Metadata = {
   title: "Booking Received",
@@ -15,8 +16,10 @@ export default function BookingConfirmationPage() {
 
       <p className="mx-auto mb-8 max-w-md text-lg text-gray-600">
         Thanks! Your appointment request has been received and is pending
-        confirmation. We&apos;ll be in touch to confirm and arrange your
-        deposit.
+        confirmation. We&apos;ll be in touch to confirm
+        {businessInfo.payment.depositsEnabled
+          ? " and arrange your deposit."
+          : ". Payment is taken in cash at your appointment."}
       </p>
 
       <ButtonLink href="/customer">View My Account</ButtonLink>
