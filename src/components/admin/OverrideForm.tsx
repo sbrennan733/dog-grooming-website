@@ -22,7 +22,7 @@ export default function OverrideForm({ minDate }: { minDate: string }) {
         errors={state?.errors?.date}
       />
 
-      <label className="flex items-center gap-2 text-sm text-gray-700">
+      <label className="flex items-center gap-2 text-sm text-muted">
         <input type="checkbox" name="isClosed" />
         Closed all day
       </label>
@@ -43,7 +43,7 @@ export default function OverrideForm({ minDate }: { minDate: string }) {
       </div>
 
       {state?.message && (
-        <p role="status" className="text-sm text-gray-700">
+        <p role="status" className="text-sm text-muted">
           {state.message}
         </p>
       )}

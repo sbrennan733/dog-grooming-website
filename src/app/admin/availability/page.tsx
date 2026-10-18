@@ -47,13 +47,13 @@ export default async function AvailabilityPage() {
   const byDay = new Map(templates.map((template) => [template.dayOfWeek, template]));
 
   return (
-    <div className="bg-white px-6 py-20">
+    <div className="bg-background px-6 py-20">
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-2 text-4xl font-bold text-gray-900">
+        <h1 className="mb-2 text-4xl text-ink">
           Weekly Availability
         </h1>
 
-        <p className="mb-8 text-gray-600">
+        <p className="mb-8 text-muted">
           Set your default opening hours. These apply every week unless a
           specific date is overridden below.
         </p>
@@ -65,13 +65,13 @@ export default async function AvailabilityPage() {
             return (
               <div
                 key={day}
-                className="flex flex-wrap items-center gap-4 rounded-lg border p-4"
+                className="flex flex-wrap items-center gap-4 rounded-2xl bg-surface p-4 shadow-soft"
               >
-                <span className="w-28 font-medium text-gray-900">
+                <span className="w-28 font-medium text-ink">
                   {DAY_LABELS[day]}
                 </span>
 
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-sm text-muted">
                   <input
                     type="checkbox"
                     name={`${day}-closed`}
@@ -81,25 +81,25 @@ export default async function AvailabilityPage() {
                   Closed
                 </label>
 
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-sm text-muted">
                   From
                   <input
                     type="time"
                     name={`${day}-start`}
                     aria-label={`${DAY_LABELS[day]} opening time`}
                     defaultValue={existing?.startTime ?? "09:00"}
-                    className="rounded-lg border border-gray-300 px-2 py-1"
+                    className="rounded-xl border border-line-input bg-surface px-3 py-1.5"
                   />
                 </label>
 
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-sm text-muted">
                   To
                   <input
                     type="time"
                     name={`${day}-end`}
                     aria-label={`${DAY_LABELS[day]} closing time`}
                     defaultValue={existing?.endTime ?? "17:00"}
-                    className="rounded-lg border border-gray-300 px-2 py-1"
+                    className="rounded-xl border border-line-input bg-surface px-3 py-1.5"
                   />
                 </label>
               </div>
@@ -109,26 +109,26 @@ export default async function AvailabilityPage() {
           <Button type="submit">Save Hours</Button>
         </form>
 
-        <h2 className="mb-2 mt-16 text-3xl font-bold text-gray-900">
+        <h2 className="mb-2 mt-16 text-3xl text-ink">
           Date Overrides
         </h2>
 
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-muted">
           Close a specific date (a holiday, say) or give it different hours.
           An override replaces the weekly hours for that one date only.
         </p>
 
         {overrides.length === 0 ? (
-          <p className="mb-8 text-gray-600">No upcoming overrides.</p>
+          <p className="mb-8 text-muted">No upcoming overrides.</p>
         ) : (
           <ul className="mb-8 space-y-3">
             {overrides.map((override) => (
               <li
                 key={override.id}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4"
+                className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-surface p-4 shadow-soft"
               >
                 <div>
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-ink">
                     {override.date.toLocaleDateString("en-GB", {
                       weekday: "long",
                       day: "numeric",
@@ -137,7 +137,7 @@ export default async function AvailabilityPage() {
                       timeZone: "UTC",
                     })}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted">
                     {override.isClosed
                       ? "Closed"
                       : `${override.startTime} – ${override.endTime}`}
@@ -147,7 +147,7 @@ export default async function AvailabilityPage() {
                 <form action={deleteDateOverride.bind(null, override.id)}>
                   <button
                     type="submit"
-                    className="rounded px-2 py-2 text-sm font-medium text-gray-900 hover:underline"
+                    className="rounded px-2 py-2 text-sm font-bold text-brand hover:underline"
                   >
                     Remove
                   </button>
@@ -157,8 +157,8 @@ export default async function AvailabilityPage() {
           </ul>
         )}
 
-        <div className="rounded-2xl border bg-gray-50 p-6">
-          <h3 className="mb-4 text-xl font-semibold text-gray-900">
+        <div className="rounded-3xl bg-surface-alt p-6">
+          <h3 className="mb-4 text-xl text-ink">
             Add an Override
           </h3>
 

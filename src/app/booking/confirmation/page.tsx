@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 
 export default function BookingConfirmationPage() {
   return (
-    <div className="bg-white px-6 py-20 text-center">
-      <h1 className="mb-4 text-4xl font-bold text-gray-900">
+    <div className="bg-background px-6 py-20 text-center">
+      <h1 className="mb-4 text-4xl text-ink">
         Booking Request Received
       </h1>
 
-      <p className="mx-auto mb-8 max-w-md text-lg text-gray-600">
+      <p className="mx-auto mb-8 max-w-md text-lg text-muted">
         Thanks! Your appointment request has been received and is pending
         confirmation. We&apos;ll be in touch to confirm
         {businessInfo.payment.depositsEnabled

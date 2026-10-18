@@ -40,7 +40,7 @@ export default function BookingStatusSelect({
       defaultValue={status}
       onChange={handleChange}
       disabled={pending}
-      className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-900 disabled:opacity-50"
+      className="rounded-xl border border-line-input bg-surface px-3 py-1.5 text-sm text-ink disabled:opacity-50"
     >
       {STATUSES.map((value) => (
         <option key={value} value={value}>

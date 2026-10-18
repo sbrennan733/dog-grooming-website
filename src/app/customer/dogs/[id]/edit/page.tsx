@@ -29,22 +29,24 @@ export default async function EditDogPage({ params }: EditDogPageProps) {
   }
 
   return (
-    <div className="bg-white px-6 py-20">
+    <div className="bg-background px-6 py-20">
       <div className="mx-auto max-w-md">
-        <h1 className="mb-8 text-center text-4xl font-bold text-gray-900">
+        <h1 className="mb-8 text-center text-4xl text-ink">
           Edit {dog.name}
         </h1>
 
-        <DogForm
-          action={updateDog.bind(null, dog.id)}
-          defaultValues={{
-            name: dog.name,
-            breed: dog.breed,
-            age: dog.age,
-            notes: dog.notes,
-          }}
-          submitLabel="Save Changes"
-        />
+        <div className="rounded-3xl bg-surface p-8 shadow-soft">
+          <DogForm
+            action={updateDog.bind(null, dog.id)}
+            defaultValues={{
+              name: dog.name,
+              breed: dog.breed,
+              age: dog.age,
+              notes: dog.notes,
+            }}
+            submitLabel="Save Changes"
+          />
+        </div>
       </div>
     </div>
   );

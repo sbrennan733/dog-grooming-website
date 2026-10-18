@@ -24,7 +24,7 @@ export default function MarkAssessmentButton({
       aria-label={`Mark assessment complete for ${dogName}`}
       onClick={handleClick}
       disabled={pending}
-      className="rounded-lg border border-gray-300 px-3 py-1 text-sm font-medium text-gray-900 transition hover:bg-gray-100 disabled:opacity-50"
+      className="rounded-full border-2 border-line px-4 py-1.5 text-sm font-bold text-ink transition hover:bg-surface-alt disabled:opacity-50"
     >
       {pending ? "Saving..." : "Mark Assessment Complete"}
     </button>

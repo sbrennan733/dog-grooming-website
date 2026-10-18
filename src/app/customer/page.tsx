@@ -37,20 +37,20 @@ export default async function CustomerDashboardPage() {
     : [[], []];
 
   return (
-    <div className="bg-white px-6 py-20">
+    <div className="bg-background px-6 py-20">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 text-4xl font-bold text-gray-900">
+        <h1 className="mb-2 text-4xl text-ink">
           Welcome, {session?.user.name}
         </h1>
 
         <div className="mt-12 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">My Dogs</h2>
+          <h2 className="text-2xl text-ink">My Dogs</h2>
 
           <ButtonLink href="/customer/dogs/new">Add a Dog</ButtonLink>
         </div>
 
         {dogs.length === 0 ? (
-          <p className="mt-6 text-gray-600">
+          <p className="mt-6 text-muted">
             You haven&apos;t added any dogs yet.
           </p>
         ) : (
@@ -62,13 +62,13 @@ export default async function CustomerDashboardPage() {
         )}
 
         <div className="mt-12 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">My Bookings</h2>
+          <h2 className="text-2xl text-ink">My Bookings</h2>
 
           <ButtonLink href="/booking" variant="secondary">Book Appointment</ButtonLink>
         </div>
 
         {bookings.length === 0 ? (
-          <p className="mt-6 text-gray-600">
+          <p className="mt-6 text-muted">
             You don&apos;t have any bookings yet.
           </p>
         ) : (
@@ -76,13 +76,13 @@ export default async function CustomerDashboardPage() {
             {bookings.map((booking) => (
               <div
                 key={booking.id}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4"
+                className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-surface p-5 shadow-soft"
               >
                 <div>
-                  <p className="font-semibold text-gray-900">
+                  <p className="font-semibold text-ink">
                     {booking.service.name} for {booking.dog.name}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted">
                     {booking.scheduledAt.toLocaleDateString("en-GB", {
                       weekday: "long",
                       day: "numeric",
@@ -96,7 +96,7 @@ export default async function CustomerDashboardPage() {
                       timeZone: BUSINESS_TIME_ZONE,
                     })}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted">
                     {businessInfo.payment.depositsEnabled
                       ? `Deposit: ${formatPrice(booking.depositAtBooking)}`
                       : `Price: ${formatPrice(booking.priceAtBooking)} (cash at your appointment)`}

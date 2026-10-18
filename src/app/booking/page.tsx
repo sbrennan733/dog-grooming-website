@@ -24,15 +24,15 @@ export default async function BookingPage() {
   ]);
 
   return (
-    <div className="bg-white px-6 py-20">
+    <div className="bg-background px-6 py-20">
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-center text-4xl font-bold text-gray-900">
+        <h1 className="mb-8 text-center text-4xl text-ink">
           Book Appointment
         </h1>
 
         {dogs.length === 0 ? (
           <div className="text-center">
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-muted">
               You&apos;ll need to add a dog to your account before booking an
               appointment.
             </p>

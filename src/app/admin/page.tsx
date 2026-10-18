@@ -26,21 +26,21 @@ export default async function AdminPage() {
   });
 
   return (
-    <div className="bg-white px-6 py-20">
+    <div className="bg-background px-6 py-20">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-4xl font-bold text-gray-900">Bookings</h1>
+          <h1 className="text-4xl text-ink">Bookings</h1>
 
           <ButtonLink href="/admin/availability" variant="secondary">Manage Availability</ButtonLink>
         </div>
 
         {bookings.length === 0 ? (
-          <p className="text-gray-600">No bookings yet.</p>
+          <p className="text-muted">No bookings yet.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-3xl bg-surface p-6 shadow-soft">
             <table className="w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b text-gray-500">
+                <tr className="border-b border-line text-muted">
                   <th className="py-3 pr-4 font-medium">Customer</th>
                   <th className="py-3 pr-4 font-medium">Dog</th>
                   <th className="py-3 pr-4 font-medium">Service</th>
@@ -55,17 +55,17 @@ export default async function AdminPage() {
               </thead>
               <tbody>
                 {bookings.map((booking) => (
-                  <tr key={booking.id} className="border-b">
-                    <td className="py-3 pr-4 text-gray-900">
+                  <tr key={booking.id} className="border-b border-line last:border-b-0">
+                    <td className="py-3 pr-4 text-ink">
                       {booking.user.name}
                     </td>
-                    <td className="py-3 pr-4 text-gray-900">
+                    <td className="py-3 pr-4 text-ink">
                       {booking.dog.name}
                     </td>
-                    <td className="py-3 pr-4 text-gray-900">
+                    <td className="py-3 pr-4 text-ink">
                       {booking.service.name}
                     </td>
-                    <td className="py-3 pr-4 whitespace-nowrap text-gray-700">
+                    <td className="py-3 pr-4 whitespace-nowrap text-muted">
                       {booking.scheduledAt.toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "short",
@@ -77,11 +77,11 @@ export default async function AdminPage() {
                         timeZone: BUSINESS_TIME_ZONE,
                       })}
                     </td>
-                    <td className="py-3 pr-4 text-gray-700">
+                    <td className="py-3 pr-4 text-muted">
                       {formatPrice(booking.priceAtBooking)}
                     </td>
                     {businessInfo.payment.depositsEnabled && (
-                      <td className="py-3 pr-4 text-gray-700">
+                      <td className="py-3 pr-4 text-muted">
                         {formatPrice(booking.depositAtBooking)}
                       </td>
                     )}

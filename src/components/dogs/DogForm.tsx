@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Button from "@/components/ui/Button";
 import FormField from "@/components/ui/FormField";
+import { inputClassName, labelClassName } from "@/components/ui/form-styles";
 import type { DogFormState } from "@/lib/validations/dog";
 
 interface DogFormProps {
@@ -57,9 +58,9 @@ export default function DogForm({
       <div>
         <label
           htmlFor="notes"
-          className="mb-1 block font-medium text-gray-900"
+          className={labelClassName}
         >
-          Notes <span className="font-normal text-gray-500">(optional)</span>
+          Notes <span className="font-normal text-muted">(optional)</span>
         </label>
 
         <textarea
@@ -69,7 +70,7 @@ export default function DogForm({
           defaultValue={defaultValues?.notes ?? ""}
           aria-invalid={Boolean(state?.errors?.notes)}
           aria-describedby={state?.errors?.notes ? "notes-error" : undefined}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+          className={inputClassName}
         />
 
         {state?.errors?.notes?.map((error) => (
@@ -77,7 +78,7 @@ export default function DogForm({
             key={error}
             id="notes-error"
             role="alert"
-            className="mt-1 text-sm text-red-600"
+            className="mt-1 text-sm text-danger"
           >
             {error}
           </p>
@@ -85,7 +86,7 @@ export default function DogForm({
       </div>
 
       {state?.message && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-danger">
           {state.message}
         </p>
       )}

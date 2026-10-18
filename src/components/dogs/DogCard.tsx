@@ -9,11 +9,11 @@ export default function DogCard({ dog }: DogCardProps) {
   const assessmentComplete = Boolean(dog.assessmentCompletedAt);
 
   return (
-    <div className="rounded-2xl border p-6 shadow-sm">
+    <div className="rounded-3xl bg-surface p-6 shadow-soft">
       <div className="mb-3 flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-xl font-semibold text-gray-900">{dog.name}</h3>
-          <p className="text-gray-600">
+          <h3 className="text-xl text-ink">{dog.name}</h3>
+          <p className="text-muted">
             {dog.breed} &middot; {dog.age} {dog.age === 1 ? "year" : "years"}{" "}
             old
           </p>
@@ -21,7 +21,7 @@ export default function DogCard({ dog }: DogCardProps) {
 
         <Link
           href={`/customer/dogs/${dog.id}/edit`}
-          className="-mr-2 -mt-1 shrink-0 rounded px-2 py-2 text-sm font-medium text-gray-900 hover:underline"
+          className="-mr-2 -mt-1 shrink-0 rounded px-2 py-2 text-sm font-bold text-brand hover:underline"
         >
           Edit
         </Link>
@@ -30,14 +30,14 @@ export default function DogCard({ dog }: DogCardProps) {
       <span
         className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
           assessmentComplete
-            ? "bg-green-100 text-green-800"
-            : "bg-yellow-100 text-yellow-800"
+            ? "bg-ok-soft text-ok-ink"
+            : "bg-warn-soft text-warn-ink"
         }`}
       >
         {assessmentComplete ? "Approved for Grooming" : "Assessment Required"}
       </span>
 
-      {dog.notes && <p className="mt-3 text-sm text-gray-600">{dog.notes}</p>}
+      {dog.notes && <p className="mt-3 text-sm text-muted">{dog.notes}</p>}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
+import { inputClassName } from "@/components/ui/form-styles";
 import { fetchAvailableSlots, createBooking } from "@/app/booking/actions";
 import { getTodayInBusinessZone } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
@@ -90,7 +91,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
   return (
     <div className="space-y-10">
       <section>
-        <h2 className="mb-4 text-xl font-semibold text-gray-900">
+        <h2 className="mb-4 text-xl text-ink">
           1. Select a Dog
         </h2>
 
@@ -101,15 +102,15 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               type="button"
               aria-pressed={dogId === dog.id}
               onClick={() => handleSelectDog(dog.id)}
-              className={`rounded-xl border p-4 text-left transition ${
+              className={`rounded-2xl border-2 bg-surface p-4 text-left transition ${
                 dogId === dog.id
-                  ? "border-black ring-1 ring-black"
-                  : "border-gray-300 hover:border-gray-400"
+                  ? "border-brand ring-2 ring-brand/25"
+                  : "border-line-input hover:border-brand"
               }`}
             >
-              <p className="font-semibold text-gray-900">{dog.name}</p>
-              <p className="text-sm text-gray-600">{dog.breed}</p>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="font-semibold text-ink">{dog.name}</p>
+              <p className="text-sm text-muted">{dog.breed}</p>
+              <p className="mt-1 text-xs text-muted">
                 {dog.assessmentCompletedAt
                   ? "Approved for Grooming"
                   : "Assessment Required"}
@@ -121,12 +122,12 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
 
       {selectedDog && (
         <section>
-          <h2 className="mb-4 text-xl font-semibold text-gray-900">
+          <h2 className="mb-4 text-xl text-ink">
             2. Select a Service
           </h2>
 
           {needsAssessment && (
-            <p className="mb-4 text-sm text-gray-600">
+            <p className="mb-4 text-sm text-muted">
               {selectedDog.name} hasn&apos;t completed an assessment visit
               yet, so only the assessment service is available for now.
             </p>
@@ -139,15 +140,15 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                 type="button"
                 aria-pressed={serviceId === service.id}
                 onClick={() => handleSelectService(service.id)}
-                className={`rounded-xl border p-4 text-left transition ${
+                className={`rounded-2xl border-2 bg-surface p-4 text-left transition ${
                   serviceId === service.id
-                    ? "border-black ring-1 ring-black"
-                    : "border-gray-300 hover:border-gray-400"
+                    ? "border-brand ring-2 ring-brand/25"
+                    : "border-line-input hover:border-brand"
                 }`}
               >
-                <p className="font-semibold text-gray-900">{service.name}</p>
-                <p className="text-sm text-gray-600">{service.description}</p>
-                <p className="mt-1 text-sm font-medium text-gray-900">
+                <p className="font-semibold text-ink">{service.name}</p>
+                <p className="text-sm text-muted">{service.description}</p>
+                <p className="mt-1 text-sm font-medium text-ink">
                   {formatPrice(service.price)}
                   {businessInfo.payment.depositsEnabled &&
                     ` (${formatPrice(service.deposit)} deposit)`}
@@ -160,13 +161,13 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
 
       {selectedService && (
         <section>
-          <h2 className="mb-4 text-xl font-semibold text-gray-900">
+          <h2 className="mb-4 text-xl text-ink">
             3. Select a Date &amp; Time
           </h2>
 
           <label
             htmlFor="booking-date"
-            className="mb-2 block text-sm font-medium text-gray-900"
+            className="mb-2 block text-sm font-medium text-ink"
           >
             Date
           </label>
@@ -177,17 +178,17 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
             min={todayStr}
             value={date}
             onChange={(event) => handleDateChange(event.target.value)}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+            className={inputClassName + " w-auto"}
           />
 
           {date && (
             <div className="mt-4">
               {loadingSlots ? (
-                <p role="status" className="text-sm text-gray-600">
+                <p role="status" className="text-sm text-muted">
                   Checking available times...
                 </p>
               ) : slots.length === 0 ? (
-                <p role="status" className="text-sm text-gray-600">
+                <p role="status" className="text-sm text-muted">
                   No available times on this date. Please try another day.
                 </p>
               ) : (
@@ -198,10 +199,10 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                       type="button"
                       aria-pressed={time === slot}
                       onClick={() => setTime(slot)}
-                      className={`rounded-lg border px-4 py-2 text-sm transition ${
+                      className={`rounded-full border-2 px-5 py-2 text-sm font-semibold transition ${
                         time === slot
-                          ? "border-black bg-black text-white"
-                          : "border-gray-300 text-gray-900 hover:border-gray-400"
+                          ? "border-brand bg-brand text-on-brand"
+                          : "border-line-input text-ink hover:border-brand"
                       }`}
                     >
                       {slot}
@@ -215,12 +216,12 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
       )}
 
       {time && selectedDog && selectedService && (
-        <section className="rounded-2xl border bg-gray-50 p-6">
-          <h2 className="mb-4 text-xl font-semibold text-gray-900">
+        <section className="rounded-3xl bg-surface-alt p-6">
+          <h2 className="mb-4 text-xl text-ink">
             4. Confirm Booking
           </h2>
 
-          <dl className="mb-6 space-y-2 text-sm text-gray-700">
+          <dl className="mb-6 space-y-2 text-sm text-muted">
             <div className="flex justify-between">
               <dt>Dog</dt>
               <dd>{selectedDog.name}</dd>
@@ -237,7 +238,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               <dt>Time</dt>
               <dd>{time}</dd>
             </div>
-            <div className="flex justify-between font-medium text-gray-900">
+            <div className="flex justify-between font-medium text-ink">
               {businessInfo.payment.depositsEnabled ? (
                 <>
                   <dt>Deposit due</dt>
@@ -253,13 +254,13 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
           </dl>
 
           {!businessInfo.payment.depositsEnabled && (
-            <p className="mb-6 text-sm text-gray-600">
+            <p className="mb-6 text-sm text-muted">
               Payment is taken in cash at your appointment.
             </p>
           )}
 
           {error && (
-            <p role="alert" className="mb-4 text-sm text-red-600">
+            <p role="alert" className="mb-4 text-sm text-danger">
               {error}
             </p>
           )}

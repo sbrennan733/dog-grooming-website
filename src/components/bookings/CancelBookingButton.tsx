@@ -29,7 +29,7 @@ export default function CancelBookingButton({
       <button
         type="button"
         onClick={() => setConfirming(true)}
-        className="rounded px-2 py-2 text-sm font-medium text-gray-700 hover:text-black hover:underline"
+        className="rounded px-2 py-2 text-sm font-medium text-muted hover:text-brand hover:underline"
       >
         Cancel booking
       </button>
@@ -38,13 +38,13 @@ export default function CancelBookingButton({
 
   return (
     <div className="flex flex-wrap items-center gap-3 text-sm">
-      <span className="text-gray-700">Cancel this booking?</span>
+      <span className="text-muted">Cancel this booking?</span>
 
       <button
         type="button"
         onClick={handleConfirm}
         disabled={pending}
-        className="rounded px-2 py-2 font-medium text-red-700 hover:underline disabled:opacity-50"
+        className="rounded px-2 py-2 font-medium text-danger hover:underline disabled:opacity-50"
       >
         {pending ? "Cancelling..." : "Yes, cancel"}
       </button>
@@ -53,13 +53,13 @@ export default function CancelBookingButton({
         type="button"
         onClick={() => setConfirming(false)}
         disabled={pending}
-        className="rounded px-2 py-2 font-medium text-gray-700 hover:underline"
+        className="rounded px-2 py-2 font-medium text-muted hover:underline"
       >
         Keep it
       </button>
 
       {error && (
-        <span role="alert" className="text-red-600">
+        <span role="alert" className="text-danger">
           {error}
         </span>
       )}
