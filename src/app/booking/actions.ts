@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/availability";
 import { zonedWallTimeToUtc } from "@/lib/timezone";
-import { priceForSize } from "@/lib/dog-size";
+import { priceForDog } from "@/lib/dog-size";
 
 export async function fetchAvailableSlots(
   date: string,
@@ -76,7 +76,7 @@ export async function createBooking(
       dogId: dog.id,
       serviceId: service.id,
       scheduledAt,
-      priceAtBooking: priceForSize(service, dog.size),
+      priceAtBooking: priceForDog(service, dog).pence,
       depositAtBooking: service.deposit,
     },
   });

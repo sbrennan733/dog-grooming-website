@@ -8,6 +8,7 @@ import ButtonLink from "@/components/ui/ButtonLink";
 import VerificationBanner from "@/components/account/VerificationBanner";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
+import { priceForDog } from "@/lib/dog-size";
 
 export const metadata: Metadata = {
   title: "My Account",
@@ -110,7 +111,7 @@ export default async function CustomerDashboardPage() {
                   <p className="text-sm text-muted">
                     {businessInfo.payment.depositsEnabled
                       ? `Deposit: ${formatPrice(booking.depositAtBooking)}`
-                      : `Price: ${formatPrice(booking.priceAtBooking)} (cash at your appointment)`}
+                      : `Price: ${priceForDog(booking.service, booking.dog).isFrom ? "from " : ""}${formatPrice(booking.priceAtBooking)} (cash at your appointment)`}
                   </p>
                 </div>
 

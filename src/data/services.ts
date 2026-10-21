@@ -1,13 +1,16 @@
 import { Service } from "@/types/booking";
 
-// From the business's price list. Durations are working estimates (the price
-// list doesn't give them) and can be adjusted here, then re-run the seed.
+const GROOM_MINUTES = 180;
+
+// From the business's price list. Durations are only used to block time in
+// the diary (customers are never shown them): each groom takes about three
+// hours. Adjust here, then re-run the seed.
 export const services: Service[] = [
   {
     id: 1,
     name: "Fresh & Fluffy Bath",
     description: "Bath, blow-dry, thorough brushing, fragrance.",
-    duration: 45,
+    duration: GROOM_MINUTES,
     prices: { small: 20, medium: 25, large: 35 },
     deposit: 10,
   },
@@ -16,7 +19,7 @@ export const services: Service[] = [
     name: "Mini Spa Groom",
     description:
       "Bath, blow-dry, thorough brushing, hygiene trim, paw pads trimmed, nails clipped, fragrance.",
-    duration: 60,
+    duration: GROOM_MINUTES,
     prices: { small: 25, medium: 30, large: 40 },
     deposit: 10,
   },
@@ -25,7 +28,7 @@ export const services: Service[] = [
     name: "Signature Full Groom",
     description:
       "Bath, blow-dry, thorough brushing, all-over body clipping to desired length, face trim, hygiene trim, paw pads trimmed, nails clipped, fragrance.",
-    duration: 90,
+    duration: GROOM_MINUTES,
     prices: { small: 35, medium: 40, large: 50 },
     deposit: 10,
   },
@@ -34,8 +37,9 @@ export const services: Service[] = [
     name: "Deluxe De-Shed",
     description:
       "Pre-bath brushing and detangling, bath, blow-dry, thorough brushing, full de-shedding of the coat, paw pads trimmed, nails clipped, styling if required, fragrance.",
-    duration: 90,
+    duration: GROOM_MINUTES,
     prices: { small: 25, medium: 30, large: 40 },
+    longCoatPrice: 50,
     priceNote:
       "Prices are for short-haired dogs. Long-haired double-coated dogs: from £50.",
     deposit: 10,
@@ -45,7 +49,7 @@ export const services: Service[] = [
     name: "Hand-Stripping Show Finish",
     description:
       "Pre-bath hand strip to remove dead, loose topcoat, bath, blow-dry, nail clipping, fragrance.",
-    duration: 90,
+    duration: GROOM_MINUTES,
     prices: { small: 35, medium: 40, large: 50 },
     deposit: 10,
   },
@@ -54,7 +58,7 @@ export const services: Service[] = [
     name: "Puppy Pamper Groom",
     description:
       "Bath, blow-dry, thorough brushing, hygiene trim, paw pads trimmed, nails clipped, face trim if needed, fragrance.",
-    duration: 60,
+    duration: GROOM_MINUTES,
     prices: { small: 20, medium: 20, large: 20 },
     isFromPrice: true,
     deposit: 10,

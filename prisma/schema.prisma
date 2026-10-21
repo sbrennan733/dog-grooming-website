@@ -83,6 +83,9 @@ model Dog {
   // Decides which price applies. The default only covers dogs saved before
   // sizes existed; the dog form always asks for it.
   size                  DogSize   @default(MEDIUM)
+  // Long-haired double-coated dogs pay a different (higher) price for some
+  // services, e.g. the De-Shed.
+  hasLongDoubleCoat     Boolean   @default(false)
   notes                 String?
   // null = assessment not yet completed; set when an admin marks it complete.
   assessmentCompletedAt DateTime?
@@ -102,6 +105,9 @@ model Service {
   priceSmall   Int
   priceMedium  Int
   priceLarge   Int
+  // Starting price (pence) for long-haired double-coated dogs, where the
+  // service has one. Final price is assessed on the day.
+  priceLongCoat Int?
   // Shown as "From £x" (the final price depends on the dog and its coat).
   isFromPrice  Boolean @default(false)
   // Extra pricing detail shown with the service, e.g. a coat-type surcharge.

@@ -18,6 +18,7 @@ export const dogSchema = z.object({
   size: z.enum(dogSizeValues, {
     error: "Please choose your dog's size.",
   }),
+  hasLongDoubleCoat: z.boolean(),
   notes: z.string().trim().optional(),
 });
 

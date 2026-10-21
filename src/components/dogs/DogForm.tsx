@@ -16,6 +16,7 @@ interface DogFormProps {
     breed: string;
     age: number;
     size: DogSize;
+    hasLongDoubleCoat: boolean;
     notes: string | null;
   };
   submitLabel: string;
@@ -101,6 +102,23 @@ export default function DogForm({
           </p>
         ))}
       </fieldset>
+
+      <label className="flex cursor-pointer items-start gap-3 text-ink">
+        <input
+          type="checkbox"
+          name="hasLongDoubleCoat"
+          defaultChecked={defaultValues?.hasLongDoubleCoat}
+          className="mt-1.5"
+        />
+        <span>
+          <span className="font-semibold">Long-haired, double-coated</span>
+          <span className="block text-sm text-muted">
+            For example a Golden Retriever, Border Collie or Husky. A few
+            services, like the De-Shed, start at a higher price for these
+            coats.
+          </span>
+        </span>
+      </label>
 
       <div>
         <label

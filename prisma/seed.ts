@@ -30,6 +30,10 @@ async function main() {
       priceSmall: toPence(service.prices.small),
       priceMedium: toPence(service.prices.medium),
       priceLarge: toPence(service.prices.large),
+      priceLongCoat:
+        service.longCoatPrice === undefined
+          ? null
+          : toPence(service.longCoatPrice),
       isFromPrice: service.isFromPrice ?? false,
       priceNote: service.priceNote ?? null,
       deposit: toPence(service.deposit),

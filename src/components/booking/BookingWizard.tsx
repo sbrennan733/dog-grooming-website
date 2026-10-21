@@ -7,7 +7,7 @@ import { fetchAvailableSlots, createBooking } from "@/app/booking/actions";
 import { getTodayInBusinessZone } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
 import { priceDisclaimer } from "@/data/services";
-import { dogSizeLabels, priceForSize } from "@/lib/dog-size";
+import { dogSizeLabels, priceForDog } from "@/lib/dog-size";
 import type { Dog, Service } from "@/generated/prisma/client";
 
 interface BookingWizardProps {
@@ -153,12 +153,12 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                 <p className="font-semibold text-ink">{service.name}</p>
                 <p className="text-sm text-muted">{service.description}</p>
                 <p className="mt-1 text-sm font-medium text-ink">
-                  {service.isFromPrice && "From "}
-                  {formatPrice(priceForSize(service, selectedDog.size))}
+                  {priceForDog(service, selectedDog).isFrom && "From "}
+                  {formatPrice(priceForDog(service, selectedDog).pence)}
                   {businessInfo.payment.depositsEnabled &&
                     ` (${formatPrice(service.deposit)} deposit)`}
                 </p>
-                {service.priceNote && (
+                {service.priceNote && !selectedDog.hasLongDoubleCoat && (
                   <p className="mt-1 text-xs text-muted">{service.priceNote}</p>
                 )}
               </button>
@@ -260,9 +260,10 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                 <>
                   <dt>Price</dt>
                   <dd>
-                    {selectedService.isFromPrice && "From "}
+                    {priceForDog(selectedService, selectedDog).isFrom &&
+                      "From "}
                     {formatPrice(
-                      priceForSize(selectedService, selectedDog.size)
+                      priceForDog(selectedService, selectedDog).pence
                     )}
                   </dd>
                 </>

@@ -38,6 +38,10 @@ export default function DogCard({ dog }: DogCardProps) {
         {assessmentComplete ? "Approved for Grooming" : "Assessment Required"}
       </span>
 
+      {dog.hasLongDoubleCoat && (
+        <p className="mt-3 text-sm text-muted">Long-haired, double-coated</p>
+      )}
+
       {dog.notes && <p className="mt-3 text-sm text-muted">{dog.notes}</p>}
     </div>
   );

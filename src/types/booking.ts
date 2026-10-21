@@ -17,6 +17,8 @@ export interface Service {
   duration: number;
   // Pounds, by dog size.
   prices: SizePrices;
+  // Starting price (pounds) for long-haired double-coated dogs, if different.
+  longCoatPrice?: number;
   // Show "From £x" because the final price depends on the dog and its coat.
   isFromPrice?: boolean;
   // Extra pricing detail, e.g. a coat-type surcharge.
