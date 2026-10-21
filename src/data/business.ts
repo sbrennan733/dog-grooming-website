@@ -9,7 +9,7 @@ export const businessInfo: BusinessInfo = {
   contact: {
     phone: "07784 474501",
     email: "bubblesandbarks30@outlook.com",
-    address: "Belfast, Northern Ireland",
+    address: "Carryduff, Northern Ireland",
   },
 
   payment: {
