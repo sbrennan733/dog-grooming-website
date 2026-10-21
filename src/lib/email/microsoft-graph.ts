@@ -16,6 +16,7 @@ export interface GraphMessage {
   to: string;
   subject: string;
   html: string;
+  replyTo?: string;
 }
 
 const DEFAULT_TOKEN_URL =
@@ -119,6 +120,9 @@ export async function sendViaGraph(
           subject: message.subject,
           body: { contentType: "HTML", content: message.html },
           toRecipients: [{ emailAddress: { address: message.to } }],
+          ...(message.replyTo && {
+            replyTo: [{ emailAddress: { address: message.replyTo } }],
+          }),
         },
         saveToSentItems: true,
       }),

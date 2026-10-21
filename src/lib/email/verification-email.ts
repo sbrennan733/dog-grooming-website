@@ -1,14 +1,6 @@
 import { businessInfo } from "@/data/business";
 import type { EmailMessage } from "./mailer";
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
+import { escapeHtml } from "./escape-html";
 
 export function buildVerificationEmail(input: {
   to: string;
