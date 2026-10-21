@@ -9,6 +9,8 @@ export interface EmailMessage {
   subject: string;
   text: string;
   html: string;
+  // Where replies should go. Defaults to the business email.
+  replyTo?: string;
 }
 
 function graphIsConfigured(): boolean {
@@ -43,7 +45,7 @@ async function sendViaSmtp(message: EmailMessage): Promise<void> {
       process.env.EMAIL_FROM ??
       `"${businessInfo.name}" <${process.env.SMTP_USER}>`,
     // Replies go to the business inbox even if the sending account differs.
-    replyTo: businessInfo.contact.email,
+    replyTo: message.replyTo ?? businessInfo.contact.email,
     to: message.to,
     subject: message.subject,
     text: message.text,

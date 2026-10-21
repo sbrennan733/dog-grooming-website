@@ -1,97 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
+import { useActionState } from "react";
 import Button from "@/components/ui/Button";
+import FormField from "@/components/ui/FormField";
 import {
-  inputClassName as inputStyles,
-  labelClassName as labelStyles,
+  inputClassName,
+  labelClassName,
 } from "@/components/ui/form-styles";
-
-interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
-type ContactFormErrors = Partial<Record<keyof ContactFormData, string>>;
-
-const initialFormData: ContactFormData = {
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
-};
-
-function validate(data: ContactFormData): ContactFormErrors {
-  const errors: ContactFormErrors = {};
-
-  if (!data.name.trim()) {
-    errors.name = "Please enter your name.";
-  }
-
-  if (!data.email.trim()) {
-    errors.email = "Please enter your email address.";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    errors.email = "Please enter a valid email address.";
-  }
-
-  if (!data.subject.trim()) {
-    errors.subject = "Please enter a subject.";
-  }
-
-  if (!data.message.trim()) {
-    errors.message = "Please enter a message.";
-  } else if (data.message.trim().length < 10) {
-    errors.message = "Please provide a little more detail (at least 10 characters).";
-  }
-
-  return errors;
-}
+import { sendContactMessage } from "@/app/contact/actions";
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState<ContactFormData>(initialFormData);
-  const [errors, setErrors] = useState<ContactFormErrors>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [state, formAction, pending] = useActionState(
+    sendContactMessage,
+    undefined
+  );
 
-  function handleChange(
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: undefined }));
-  }
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const validationErrors = validate(formData);
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
-
-    // No backend exists yet — once /api/contact is built, this will POST
-    // formData there for server-side validation and storage instead.
-    console.log("Contact form submitted:", formData);
-
-    setIsSubmitted(true);
-    setFormData(initialFormData);
-  }
-
-  if (isSubmitted) {
+  if (state?.success) {
     return (
       <div>
-        <h2 className="mb-6 text-3xl text-ink">
-          Send a Message
-        </h2>
+        <h2 className="mb-6 text-3xl text-ink">Send a Message</h2>
 
-        <div
-          role="status"
-          className="rounded-2xl bg-ok-soft p-6 text-ok-ink"
-        >
+        <div role="status" className="rounded-2xl bg-ok-soft p-6 text-ok-ink">
           Thanks for reaching out — we&apos;ll get back to you as soon as
           possible.
         </div>
@@ -99,89 +28,47 @@ export default function ContactForm() {
     );
   }
 
+  const messageErrors = state?.errors?.message;
+
   return (
     <div>
-      <h2 className="mb-6 text-3xl text-ink">
-        Send a Message
-      </h2>
+      <h2 className="mb-6 text-3xl text-ink">Send a Message</h2>
 
-      <form noValidate onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label htmlFor="name" className={labelStyles}>
-            Name
-          </label>
+      <form action={formAction} className="space-y-5">
+        <FormField
+          label="Name"
+          name="name"
+          type="text"
+          required
+          maxLength={100}
+          autoComplete="name"
+          defaultValue={state?.values?.name}
+          errors={state?.errors?.name}
+        />
 
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            autoComplete="name"
-            value={formData.name}
-            onChange={handleChange}
-            aria-invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? "name-error" : undefined}
-            className={inputStyles}
-          />
+        <FormField
+          label="Email"
+          name="email"
+          type="email"
+          required
+          maxLength={254}
+          autoComplete="email"
+          defaultValue={state?.values?.email}
+          errors={state?.errors?.email}
+        />
 
-          {errors.name && (
-            <p id="name-error" role="alert" className="mt-1 text-sm text-danger">
-              {errors.name}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="email" className={labelStyles}>
-            Email
-          </label>
-
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            value={formData.email}
-            onChange={handleChange}
-            aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            className={inputStyles}
-          />
-
-          {errors.email && (
-            <p id="email-error" role="alert" className="mt-1 text-sm text-danger">
-              {errors.email}
-            </p>
-          )}
-        </div>
+        <FormField
+          label="Subject"
+          name="subject"
+          type="text"
+          required
+          maxLength={150}
+          defaultValue={state?.values?.subject}
+          errors={state?.errors?.subject}
+        />
 
         <div>
-          <label htmlFor="subject" className={labelStyles}>
-            Subject
-          </label>
-
-          <input
-            id="subject"
-            name="subject"
-            type="text"
-            required
-            value={formData.subject}
-            onChange={handleChange}
-            aria-invalid={Boolean(errors.subject)}
-            aria-describedby={errors.subject ? "subject-error" : undefined}
-            className={inputStyles}
-          />
-
-          {errors.subject && (
-            <p id="subject-error" role="alert" className="mt-1 text-sm text-danger">
-              {errors.subject}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="message" className={labelStyles}>
+          <label htmlFor="message" className={labelClassName}>
             Message
           </label>
 
@@ -190,22 +77,44 @@ export default function ContactForm() {
             name="message"
             rows={5}
             required
-            value={formData.message}
-            onChange={handleChange}
-            aria-invalid={Boolean(errors.message)}
-            aria-describedby={errors.message ? "message-error" : undefined}
-            className={inputStyles}
+            maxLength={2000}
+            defaultValue={state?.values?.message}
+            aria-invalid={Boolean(messageErrors?.length)}
+            aria-describedby={messageErrors?.length ? "message-error" : undefined}
+            className={inputClassName}
           />
 
-          {errors.message && (
-            <p id="message-error" role="alert" className="mt-1 text-sm text-danger">
-              {errors.message}
-            </p>
-          )}
+          {messageErrors?.length ? (
+            <div id="message-error" role="alert">
+              {messageErrors.map((error) => (
+                <p key={error} className="mt-1 text-sm text-danger">
+                  {error}
+                </p>
+              ))}
+            </div>
+          ) : null}
         </div>
 
-        <Button type="submit" className="w-full sm:w-auto">
-          Send Message
+        {/* Honeypot for spam bots: hidden from people and skipped by tab. */}
+        <div className="absolute -left-[9999px]" aria-hidden="true">
+          <label htmlFor="website">Leave this field empty</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
+        {state?.message && (
+          <p role="alert" className="text-sm text-danger">
+            {state.message}
+          </p>
+        )}
+
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
+          {pending ? "Sending..." : "Send Message"}
         </Button>
       </form>
     </div>
