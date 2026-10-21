@@ -2,12 +2,17 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import nodemailer from "nodemailer";
 import { businessInfo } from "@/data/business";
+import { sendViaGraph } from "./microsoft-graph";
 
 export interface EmailMessage {
   to: string;
   subject: string;
   text: string;
   html: string;
+}
+
+function graphIsConfigured(): boolean {
+  return Boolean(process.env.MS_CLIENT_ID && process.env.MS_REFRESH_TOKEN);
 }
 
 function smtpIsConfigured(): boolean {
@@ -66,6 +71,17 @@ async function writeToDevOutbox(message: EmailMessage): Promise<void> {
 }
 
 export async function sendEmail(message: EmailMessage): Promise<void> {
+  if (graphIsConfigured()) {
+    await sendViaGraph(
+      {
+        clientId: process.env.MS_CLIENT_ID!,
+        refreshToken: process.env.MS_REFRESH_TOKEN!,
+      },
+      message
+    );
+    return;
+  }
+
   if (smtpIsConfigured()) {
     await sendViaSmtp(message);
     return;
@@ -79,6 +95,6 @@ export async function sendEmail(message: EmailMessage): Promise<void> {
   // Fail loudly: silently dropping verification emails would leave
   // customers stuck with no way to know why.
   throw new Error(
-    "Email is not configured. Set SMTP_HOST, SMTP_USER and SMTP_PASS (see .env.example)."
+    "Email is not configured. Set MS_CLIENT_ID and MS_REFRESH_TOKEN, or SMTP_HOST, SMTP_USER and SMTP_PASS (see .env.example)."
   );
 }
