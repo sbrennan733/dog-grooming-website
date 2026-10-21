@@ -37,6 +37,8 @@ async function sendViaSmtp(message: EmailMessage): Promise<void> {
     from:
       process.env.EMAIL_FROM ??
       `"${businessInfo.name}" <${process.env.SMTP_USER}>`,
+    // Replies go to the business inbox even if the sending account differs.
+    replyTo: businessInfo.contact.email,
     to: message.to,
     subject: message.subject,
     text: message.text,

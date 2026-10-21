@@ -8,7 +8,7 @@ export const businessInfo: BusinessInfo = {
 
   contact: {
     phone: "01234 567890",
-    email: "bubblesandbarkscarryduff@gmail.com",
+    email: "bubblesandbarks30@outlook.com",
     address: "Belfast, Northern Ireland",
   },
 
