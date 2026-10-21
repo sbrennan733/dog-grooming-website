@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { dogSizeValues } from "@/lib/dog-size";
 
 export const dogSchema = z.object({
   name: z
@@ -14,6 +15,10 @@ export const dogSchema = z.object({
     .int({ error: "Age must be a whole number." })
     .min(0, { error: "Age can't be negative." })
     .max(30, { error: "Please enter a realistic age." }),
+  size: z.enum(dogSizeValues, {
+    error: "Please choose your dog's size.",
+  }),
+  hasLongDoubleCoat: z.boolean(),
   notes: z.string().trim().optional(),
 });
 
@@ -23,6 +28,7 @@ export type DogFormState =
         name?: string[];
         breed?: string[];
         age?: string[];
+        size?: string[];
         notes?: string[];
       };
       message?: string;

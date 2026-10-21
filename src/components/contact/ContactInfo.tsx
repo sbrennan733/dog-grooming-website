@@ -24,11 +24,11 @@ export default function ContactInfo() {
 
           <div className="min-w-0">
             <h3 className="text-ink">
-              Phone
+              Phone <span className="font-normal text-muted">(call or text)</span>
             </h3>
 
             <a
-              href={`tel:${businessInfo.contact.phone}`}
+              href={`tel:${businessInfo.contact.phone.replace(/\s/g, "")}`}
               className="text-muted transition-colors hover:text-brand"
             >
               {businessInfo.contact.phone}

@@ -3,11 +3,27 @@ export interface Dog{
     name: string;
 }
 
+export interface SizePrices {
+  small: number;
+  medium: number;
+  large: number;
+}
+
 export interface Service {
   id: number;
   name: string;
   description: string;
+  // Minutes. Drives how long the slot is blocked in the diary.
   duration: number;
-  price: number;
+  // Pounds, by dog size.
+  prices: SizePrices;
+  // Starting price (pounds) for long-haired double-coated dogs, if different.
+  longCoatPrice?: number;
+  // Show "From £x" because the final price depends on the dog and its coat.
+  isFromPrice?: boolean;
+  // Extra pricing detail, e.g. a coat-type surcharge.
+  priceNote?: string;
   deposit: number;
+  // The mandatory first visit, offered to new dogs only (not on the price list).
+  isAssessment?: boolean;
 }

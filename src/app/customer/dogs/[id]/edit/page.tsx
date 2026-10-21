@@ -42,6 +42,8 @@ export default async function EditDogPage({ params }: EditDogPageProps) {
               name: dog.name,
               breed: dog.breed,
               age: dog.age,
+              size: dog.size,
+              hasLongDoubleCoat: dog.hasLongDoubleCoat,
               notes: dog.notes,
             }}
             submitLabel="Save Changes"

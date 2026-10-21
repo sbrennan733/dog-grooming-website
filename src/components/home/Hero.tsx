@@ -1,5 +1,8 @@
 import Image from "next/image";
 import ButtonLink from "@/components/ui/ButtonLink";
+import { galleryImages } from "@/data/gallery";
+
+const heroImage = galleryImages[0];
 
 export default function Hero() {
   return (
@@ -36,12 +39,13 @@ export default function Hero() {
           />
 
           <Image
-            src="/images/dog.jpg"
-            alt="Happy dog after grooming"
-            width={600}
-            height={600}
+            src={heroImage.src}
+            alt={heroImage.alt}
+            width={heroImage.width}
+            height={heroImage.height}
+            sizes="(min-width: 768px) 50vw, 448px"
             priority
-            className="relative mx-auto w-full max-w-md rounded-[2.25rem] object-cover shadow-lift md:max-w-full"
+            className="relative mx-auto aspect-[4/5] w-full max-w-md rounded-[2.25rem] object-cover shadow-lift md:max-w-full"
           />
         </div>
       </div>

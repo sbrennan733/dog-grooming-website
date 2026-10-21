@@ -69,11 +69,23 @@ model EmailVerificationToken {
   @@index([userId])
 }
 
+enum DogSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
 model Dog {
   id                    String    @id @default(cuid())
   name                  String
   breed                 String
   age                   Int
+  // Decides which price applies. The default only covers dogs saved before
+  // sizes existed; the dog form always asks for it.
+  size                  DogSize   @default(MEDIUM)
+  // Long-haired double-coated dogs pay a different (higher) price for some
+  // services, e.g. the De-Shed.
+  hasLongDoubleCoat     Boolean   @default(false)
   notes                 String?
   // null = assessment not yet completed; set when an admin marks it complete.
   assessmentCompletedAt DateTime?
@@ -89,8 +101,21 @@ model Service {
   name         String  @unique
   description  String
   duration     Int // minutes
-  price        Int // pence
+  // Prices in pence, by dog size.
+  priceSmall   Int
+  priceMedium  Int
+  priceLarge   Int
+  // Starting price (pence) for long-haired double-coated dogs, where the
+  // service has one. Final price is assessed on the day.
+  priceLongCoat Int?
+  // Shown as "From £x" (the final price depends on the dog and its coat).
+  isFromPrice  Boolean @default(false)
+  // Extra pricing detail shown with the service, e.g. a coat-type surcharge.
+  priceNote    String?
   deposit      Int // pence
+  // Retired services stay in the database so past bookings keep working,
+  // but are no longer offered.
+  isActive     Boolean @default(true)
   // Identifies the mandatory first-visit assessment service.
   isAssessment Boolean @default(false)
 

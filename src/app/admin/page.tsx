@@ -6,6 +6,7 @@ import MarkAssessmentButton from "@/components/admin/MarkAssessmentButton";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
+import { priceForDog } from "@/lib/dog-size";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -91,6 +92,8 @@ export default async function AdminPage() {
                       })}
                     </td>
                     <td className="py-3 pr-4 text-muted">
+                      {priceForDog(booking.service, booking.dog).isFrom &&
+                        "From "}
                       {formatPrice(booking.priceAtBooking)}
                     </td>
                     {businessInfo.payment.depositsEnabled && (

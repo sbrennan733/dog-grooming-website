@@ -18,6 +18,8 @@ export async function createDog(
     name: formData.get("name"),
     breed: formData.get("breed"),
     age: formData.get("age"),
+    size: formData.get("size"),
+    hasLongDoubleCoat: formData.get("hasLongDoubleCoat") === "on",
     notes: formData.get("notes"),
   });
 
@@ -54,6 +56,8 @@ export async function updateDog(
     name: formData.get("name"),
     breed: formData.get("breed"),
     age: formData.get("age"),
+    size: formData.get("size"),
+    hasLongDoubleCoat: formData.get("hasLongDoubleCoat") === "on",
     notes: formData.get("notes"),
   });
 
