@@ -28,7 +28,11 @@ export default function BookingActions({
 }: BookingActionsProps) {
   const [pending, startTransition] = useTransition();
   const [confirmingCancel, setConfirmingCancel] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; message: string }>();
+  const [result, setResult] = useState<{
+    ok: boolean;
+    message: string;
+    emailFailed?: boolean;
+  }>();
 
   const label = `${customerName}, ${dogName}`;
 
@@ -130,8 +134,10 @@ export default function BookingActions({
 
       {result && !pending && (
         <p
-          role={result.ok ? "status" : "alert"}
-          className={`text-sm ${result.ok ? "text-ok-ink" : "text-danger-ink"}`}
+          role={result.ok && !result.emailFailed ? "status" : "alert"}
+          className={`text-sm ${
+            result.ok && !result.emailFailed ? "text-ok-ink" : "text-danger-ink"
+          }`}
         >
           {result.message}
         </p>

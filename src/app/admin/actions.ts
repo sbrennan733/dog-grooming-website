@@ -14,6 +14,8 @@ export interface BookingDecisionResult {
   ok: boolean;
   // Shown to the admin after the change.
   message: string;
+  // The status was saved but the customer could not be emailed.
+  emailFailed?: boolean;
 }
 
 function formatPrice(pence: number): string {
@@ -109,6 +111,7 @@ export async function setBookingStatus(
     console.error("Could not send booking status email:", error);
     return {
       ok: true,
+      emailFailed: true,
       message: `Saved as ${decision.toLowerCase()}, but the email to ${customer} could not be sent. Please let them know yourself.`,
     };
   }
