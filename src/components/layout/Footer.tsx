@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import EmailText from "@/components/ui/EmailText";
 import { businessInfo } from "@/data/business";
 import { navLinks } from "@/data/navigation";
@@ -76,6 +76,24 @@ export default async function Footer() {
                 <MapPin size={16} aria-hidden="true" className="shrink-0" />
                 {businessInfo.contact.address}
               </li>
+              {businessInfo.social.facebook && (
+                <li className="flex items-center gap-2">
+                  <ExternalLink
+                    size={16}
+                    aria-hidden="true"
+                    className="shrink-0"
+                  />
+                  <a
+                    href={businessInfo.social.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                  >
+                    Find us on Facebook
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
