@@ -40,15 +40,33 @@ enum DayOfWeek {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  role         Role      @default(CUSTOMER)
-  createdAt    DateTime  @default(now())
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+  // null until the user clicks the link emailed to them, proving they
+  // control this address.
+  emailVerified DateTime?
 
-  dogs         Dog[]
-  bookings     Booking[]
+  dogs                    Dog[]
+  bookings                Booking[]
+  emailVerificationTokens EmailVerificationToken[]
+}
+
+// Only a SHA-256 hash of each token is stored (the raw token exists only in
+// the emailed link), so a database leak cannot be used to verify accounts.
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Dog {
@@ -70,9 +88,9 @@ model Service {
   id           String  @id @default(cuid())
   name         String  @unique
   description  String
-  duration     Int     // minutes
-  price        Int     // pence
-  deposit      Int     // pence
+  duration     Int // minutes
+  price        Int // pence
+  deposit      Int // pence
   // Identifies the mandatory first-visit assessment service.
   isAssessment Boolean @default(false)
 

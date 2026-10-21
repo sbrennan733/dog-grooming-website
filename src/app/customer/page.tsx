@@ -5,6 +5,7 @@ import DogCard from "@/components/dogs/DogCard";
 import BookingStatusBadge from "@/components/bookings/BookingStatusBadge";
 import CancelBookingButton from "@/components/bookings/CancelBookingButton";
 import ButtonLink from "@/components/ui/ButtonLink";
+import VerificationBanner from "@/components/account/VerificationBanner";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
 
@@ -22,8 +23,12 @@ export default async function CustomerDashboardPage() {
   const session = await auth();
   const now = new Date();
 
-  const [dogs, bookings] = session?.user
+  const [account, dogs, bookings] = session?.user
     ? await Promise.all([
+        prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { email: true, emailVerified: true },
+        }),
         prisma.dog.findMany({
           where: { ownerId: session.user.id },
           orderBy: { createdAt: "asc" },
@@ -34,7 +39,7 @@ export default async function CustomerDashboardPage() {
           orderBy: { scheduledAt: "asc" },
         }),
       ])
-    : [[], []];
+    : [null, [], []];
 
   return (
     <div className="bg-background px-6 py-20">
@@ -42,6 +47,12 @@ export default async function CustomerDashboardPage() {
         <h1 className="mb-2 text-4xl text-ink">
           Welcome, {session?.user.name}
         </h1>
+
+        {account && !account.emailVerified && (
+          <div className="mt-6">
+            <VerificationBanner email={account.email} />
+          </div>
+        )}
 
         <div className="mt-12 flex items-center justify-between">
           <h2 className="text-2xl text-ink">My Dogs</h2>
