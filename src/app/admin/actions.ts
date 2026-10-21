@@ -29,3 +29,15 @@ export async function markAssessmentComplete(dogId: string) {
 
   revalidatePath("/admin");
 }
+
+export async function markContactMessageRead(messageId: string) {
+  await requireAdmin();
+
+  await prisma.contactMessage.update({
+    where: { id: messageId },
+    data: { isRead: true },
+  });
+
+  revalidatePath("/admin/messages");
+  revalidatePath("/admin");
+}

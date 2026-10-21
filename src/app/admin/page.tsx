@@ -20,10 +20,13 @@ function formatPrice(pence: number): string {
 export default async function AdminPage() {
   await requireAdmin();
 
-  const bookings = await prisma.booking.findMany({
-    include: { user: true, dog: true, service: true },
-    orderBy: { scheduledAt: "asc" },
-  });
+  const [bookings, unreadMessages] = await Promise.all([
+    prisma.booking.findMany({
+      include: { user: true, dog: true, service: true },
+      orderBy: { scheduledAt: "asc" },
+    }),
+    prisma.contactMessage.count({ where: { isRead: false } }),
+  ]);
 
   return (
     <div className="bg-background px-6 py-20">
@@ -31,7 +34,17 @@ export default async function AdminPage() {
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-4xl text-ink">Bookings</h1>
 
-          <ButtonLink href="/admin/availability" variant="secondary">Manage Availability</ButtonLink>
+          <div className="flex flex-wrap gap-3">
+            <ButtonLink href="/admin/messages" variant="secondary">
+              {unreadMessages > 0
+                ? `Messages (${unreadMessages} new)`
+                : "Messages"}
+            </ButtonLink>
+
+            <ButtonLink href="/admin/availability" variant="secondary">
+              Manage Availability
+            </ButtonLink>
+          </div>
         </div>
 
         {bookings.length === 0 ? (
