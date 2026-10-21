@@ -17,7 +17,6 @@ export const businessInfo: BusinessInfo = {
   },
 
   social: {
-    instagram: "#",
-    facebook: "#",
+    facebook: "https://www.facebook.com/people/Bubbles-and-Barks/61595726270851/",
   },
 };

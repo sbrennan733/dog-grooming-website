@@ -158,6 +158,8 @@ model Payment {
 }
 
 // The recurring default schedule: at most one row per day of the week.
+// The weekly opening hours shown on the website (footer). They do not make
+// anything bookable; see AvailableSlot.
 model AvailabilityTemplate {
   id        String    @id @default(cuid())
   dayOfWeek DayOfWeek @unique
@@ -166,15 +168,16 @@ model AvailabilityTemplate {
   endTime   String? // e.g. "17:00"
 }
 
-// A one-off exception for a specific date (holiday, altered hours, etc).
-// When generating bookable slots for a date, an override always wins over
-// the AvailabilityTemplate for that day of the week.
-model AvailabilityOverride {
+// A start time the admin has opened for booking on a specific date.
+// Customers can only book times that exist here (and aren't already taken);
+// the weekly AvailabilityTemplate is just the opening hours shown on the site.
+model AvailableSlot {
   id        String   @id @default(cuid())
-  date      DateTime @unique
-  isClosed  Boolean  @default(false)
-  startTime String?
-  endTime   String?
+  date      DateTime // calendar date, stored as midnight UTC
+  startTime String // "HH:mm" in business (London) time
+  createdAt DateTime @default(now())
+
+  @@unique([date, startTime])
 }
 
 model ContactMessage {

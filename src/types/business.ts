@@ -16,7 +16,8 @@ export interface BusinessInfo {
   };
 
   social: {
-    instagram: string;
-    facebook: string;
+    // Only set the networks the business actually has a page on.
+    facebook?: string;
+    instagram?: string;
   };
 }

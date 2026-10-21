@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import { inputClassName } from "@/components/ui/form-styles";
-import { fetchAvailableSlots, createBooking } from "@/app/booking/actions";
-import { getTodayInBusinessZone } from "@/lib/timezone";
+import Link from "next/link";
+import {
+  fetchAvailableDates,
+  fetchAvailableSlots,
+  createBooking,
+} from "@/app/booking/actions";
+import { formatDateString } from "@/lib/format-date";
 import { businessInfo } from "@/data/business";
 import { priceDisclaimer } from "@/data/services";
 import { dogSizeLabels, priceForDog } from "@/lib/dog-size";
@@ -24,6 +28,8 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
   const [serviceId, setServiceId] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [dates, setDates] = useState<string[]>([]);
+  const [loadingDates, setLoadingDates] = useState(false);
   const [slots, setSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -42,21 +48,26 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
     (service) => service.id === serviceId
   );
 
-  const todayStr = getTodayInBusinessZone();
-
   function handleSelectDog(newDogId: string) {
     setDogId(newDogId);
     setServiceId("");
     setDate("");
     setTime("");
+    setDates([]);
     setSlots([]);
   }
 
-  function handleSelectService(newServiceId: string) {
+  async function handleSelectService(newServiceId: string) {
     setServiceId(newServiceId);
     setDate("");
     setTime("");
+    setDates([]);
     setSlots([]);
+
+    setLoadingDates(true);
+    const result = await fetchAvailableDates(newServiceId);
+    setLoadingDates(false);
+    setDates(result);
   }
 
   async function handleDateChange(newDate: string) {
@@ -177,21 +188,45 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
             3. Select a Date &amp; Time
           </h2>
 
-          <label
-            htmlFor="booking-date"
-            className="mb-2 block text-sm font-medium text-ink"
-          >
-            Date
-          </label>
+          {loadingDates ? (
+            <p role="status" className="text-sm text-muted">
+              Checking available dates...
+            </p>
+          ) : dates.length === 0 ? (
+            <p role="status" className="text-sm text-muted">
+              There are no appointments available to book right now. New
+              times are added regularly, so please check back soon, or{" "}
+              <Link
+                href="/contact"
+                className="font-bold text-brand hover:underline"
+              >
+                get in touch
+              </Link>
+              .
+            </p>
+          ) : (
+            <>
+              <p className="mb-2 text-sm font-medium text-ink">Date</p>
 
-          <input
-            id="booking-date"
-            type="date"
-            min={todayStr}
-            value={date}
-            onChange={(event) => handleDateChange(event.target.value)}
-            className={inputClassName + " w-auto"}
-          />
+              <div className="flex flex-wrap gap-2">
+                {dates.map((availableDate) => (
+                  <button
+                    key={availableDate}
+                    type="button"
+                    aria-pressed={date === availableDate}
+                    onClick={() => handleDateChange(availableDate)}
+                    className={`rounded-full border-2 px-5 py-2 text-sm font-semibold transition ${
+                      date === availableDate
+                        ? "border-brand bg-brand text-on-brand"
+                        : "border-line-input text-ink hover:border-brand"
+                    }`}
+                  >
+                    {formatDateString(availableDate, "short")}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           {date && (
             <div className="mt-4">
@@ -201,7 +236,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                 </p>
               ) : slots.length === 0 ? (
                 <p role="status" className="text-sm text-muted">
-                  No available times on this date. Please try another day.
+                  No times left on this date. Please choose another day.
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-2">
@@ -244,7 +279,7 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
             </div>
             <div className="flex justify-between">
               <dt>Date</dt>
-              <dd>{date}</dd>
+              <dd>{formatDateString(date)}</dd>
             </div>
             <div className="flex justify-between">
               <dt>Time</dt>

@@ -4,14 +4,10 @@ import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth-guards";
 import { OPENING_HOURS_TAG } from "@/lib/opening-hours";
 import { prisma } from "@/lib/prisma";
+import { getTodayInBusinessZone, zonedWallTimeToUtc } from "@/lib/timezone";
 import {
-  addDays,
-  getTodayInBusinessZone,
-  zonedWallTimeToUtc,
-} from "@/lib/timezone";
-import {
-  overrideSchema,
-  type OverrideFormState,
+  addSlotsSchema,
+  type AddSlotsFormState,
 } from "@/lib/validations/availability";
 import type { DayOfWeek } from "@/generated/prisma/client";
 
@@ -54,79 +50,76 @@ export async function updateWeeklyAvailability(formData: FormData) {
   revalidatePath("/admin/availability");
 }
 
-export async function saveDateOverride(
-  _prevState: OverrideFormState,
+export async function addAvailableSlots(
+  _prevState: AddSlotsFormState,
   formData: FormData
-): Promise<OverrideFormState> {
+): Promise<AddSlotsFormState> {
   await requireAdmin();
 
-  const validatedFields = overrideSchema.safeParse({
+  const validatedFields = addSlotsSchema.safeParse({
     date: formData.get("date"),
-    isClosed: formData.get("isClosed") === "on",
-    startTime: formData.get("startTime") ?? "",
-    endTime: formData.get("endTime") ?? "",
+    times: formData.getAll("times"),
   });
+
+  const values = {
+    date: String(formData.get("date") ?? ""),
+    times: formData.getAll("times").map(String),
+  };
 
   if (!validatedFields.success) {
-    return { errors: validatedFields.error.flatten().fieldErrors };
+    return { errors: validatedFields.error.flatten().fieldErrors, values };
   }
 
-  const { date, isClosed, startTime, endTime } = validatedFields.data;
+  const { date, times } = validatedFields.data;
 
   if (date < getTodayInBusinessZone()) {
-    return { errors: { date: ["Choose today or a future date."] } };
+    return { errors: { date: ["Choose today or a future date."] }, values };
   }
 
-  // Overrides are keyed by calendar date, stored as midnight UTC.
-  const dateKey = new Date(`${date}T00:00:00.000Z`);
-
-  await prisma.availabilityOverride.upsert({
-    where: { date: dateKey },
-    update: {
-      isClosed,
-      startTime: isClosed ? null : startTime,
-      endTime: isClosed ? null : endTime,
-    },
-    create: {
-      date: dateKey,
-      isClosed,
-      startTime: isClosed ? null : startTime,
-      endTime: isClosed ? null : endTime,
-    },
-  });
-
-  // Changing a day's hours doesn't touch bookings already made for it, so
-  // tell the admin if any are now sitting on a day they've changed.
-  const existingBookings = await prisma.booking.count({
-    where: {
-      scheduledAt: {
-        gte: zonedWallTimeToUtc(date, "00:00"),
-        lt: zonedWallTimeToUtc(addDays(date, 1), "00:00"),
-      },
-      status: { not: "CANCELLED" },
-    },
+  // Slots are keyed by calendar date, stored as midnight UTC.
+  const result = await prisma.availableSlot.createMany({
+    data: times.map((startTime) => ({
+      date: new Date(`${date}T00:00:00.000Z`),
+      startTime,
+    })),
+    skipDuplicates: true,
   });
 
   revalidatePath("/admin/availability");
+  revalidatePath("/booking");
 
+  const skipped = times.length - result.count;
   return {
     message:
-      existingBookings > 0
-        ? `Saved. ${existingBookings} existing booking${
-            existingBookings === 1 ? "" : "s"
-          } on this date ${
-            existingBookings === 1 ? "was" : "were"
-          } not changed — review ${
-            existingBookings === 1 ? "it" : "them"
-          } on the Bookings page.`
-        : "Saved.",
+      result.count === 0
+        ? "Those times were already open for that date."
+        : `Opened ${result.count} time${result.count === 1 ? "" : "s"}.${
+            skipped > 0 ? ` ${skipped} already open.` : ""
+          }`,
   };
 }
 
-export async function deleteDateOverride(overrideId: string) {
+// An opened time can only be taken away while nobody has booked it.
+export async function removeAvailableSlot(slotId: string) {
   await requireAdmin();
 
-  await prisma.availabilityOverride.deleteMany({ where: { id: overrideId } });
+  const slot = await prisma.availableSlot.findUnique({ where: { id: slotId } });
+  if (!slot) {
+    return;
+  }
+
+  const date = slot.date.toISOString().slice(0, 10);
+  const start = zonedWallTimeToUtc(date, slot.startTime);
+
+  const booking = await prisma.booking.findFirst({
+    where: { scheduledAt: start, status: { not: "CANCELLED" } },
+  });
+  if (booking) {
+    return;
+  }
+
+  await prisma.availableSlot.delete({ where: { id: slotId } });
 
   revalidatePath("/admin/availability");
+  revalidatePath("/booking");
 }

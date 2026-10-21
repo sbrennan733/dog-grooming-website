@@ -1,8 +1,8 @@
 import Image from "next/image";
 import ButtonLink from "@/components/ui/ButtonLink";
-import { beforeAfterPairs } from "@/data/gallery";
+import { galleryImages } from "@/data/gallery";
 
-const heroImage = beforeAfterPairs[0].after;
+const heroImage = galleryImages[1];
 
 export default function Hero() {
   return (
@@ -40,12 +40,12 @@ export default function Hero() {
 
           <Image
             src={heroImage.src}
-            alt="Small black and white dog with a neat trim and a blue paw-print bandana"
+            alt={heroImage.alt}
             width={heroImage.width}
             height={heroImage.height}
             sizes="(min-width: 768px) 50vw, 448px"
             priority
-            className="relative mx-auto aspect-[4/5] w-full max-w-md rounded-[2.25rem] object-cover shadow-lift md:max-w-full"
+            className="relative mx-auto aspect-[4/5] w-full max-w-md rounded-[2.25rem] object-cover object-[50%_20%] shadow-lift md:max-w-full"
           />
         </div>
       </div>
