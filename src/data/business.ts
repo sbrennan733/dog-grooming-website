@@ -17,6 +17,6 @@ export const businessInfo: BusinessInfo = {
   },
 
   social: {
-    facebook: "https://www.facebook.com/61595726270851",
+    facebook: "https://www.facebook.com/people/Bubbles-and-Barks/61595726270851/",
   },
 };
