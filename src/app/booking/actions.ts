@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { getAvailableSlots } from "@/lib/availability";
+import { getAvailableDates, getAvailableSlots } from "@/lib/availability";
 import { zonedWallTimeToUtc } from "@/lib/timezone";
 import { priceForDog } from "@/lib/dog-size";
 
@@ -12,6 +12,10 @@ export async function fetchAvailableSlots(
   serviceId: string
 ): Promise<string[]> {
   return getAvailableSlots(date, serviceId);
+}
+
+export async function fetchAvailableDates(serviceId: string): Promise<string[]> {
+  return getAvailableDates(serviceId);
 }
 
 interface CreateBookingInput {

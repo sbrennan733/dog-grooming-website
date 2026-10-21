@@ -43,7 +43,7 @@ export default async function AdminPage() {
             </ButtonLink>
 
             <ButtonLink href="/admin/availability" variant="secondary">
-              Manage Availability
+              Appointment Times
             </ButtonLink>
           </div>
         </div>

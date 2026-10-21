@@ -5,148 +5,167 @@ import {
   getZonedParts,
   zonedWallTimeToUtc,
 } from "@/lib/timezone";
-import type { DayOfWeek } from "@/generated/prisma/client";
 
-const DAY_NAMES: DayOfWeek[] = [
-  "SUNDAY",
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-  "SATURDAY",
-];
+// Nothing is bookable by default. The admin opens specific start times on
+// specific dates (AvailableSlot); a customer can only book one of those,
+// and only while it isn't blocked by a booking already made.
 
-// Slot start times, minutes-from-midnight, used by all the helpers below.
-const SLOT_STEP_MINUTES = 30;
+const MAX_DATES_OFFERED = 60;
 
 function timeStringToMinutes(time: string): number {
   const [hours, minutes] = time.split(":").map(Number);
   return hours * 60 + minutes;
 }
 
-function minutesToTimeString(minutes: number): string {
-  const hours = Math.floor(minutes / 60)
-    .toString()
-    .padStart(2, "0");
-  const mins = (minutes % 60).toString().padStart(2, "0");
-  return `${hours}:${mins}`;
-}
-
 function parseDateOnly(dateStr: string): Date {
   return new Date(`${dateStr}T00:00:00.000Z`);
 }
 
-interface DayHours {
-  isClosed: boolean;
-  startTime: string | null;
-  endTime: string | null;
+function toDateString(date: Date): string {
+  return date.toISOString().slice(0, 10);
 }
 
-// A date-specific AvailabilityOverride always wins over the recurring
-// AvailabilityTemplate for that day of the week.
-async function getDayHours(dateStr: string): Promise<DayHours> {
-  const date = parseDateOnly(dateStr);
-
-  const override = await prisma.availabilityOverride.findUnique({
-    where: { date },
-  });
-
-  if (override) {
-    return {
-      isClosed: override.isClosed,
-      startTime: override.startTime,
-      endTime: override.endTime,
-    };
-  }
-
-  const dayOfWeek = DAY_NAMES[date.getUTCDay()];
-  const template = await prisma.availabilityTemplate.findUnique({
-    where: { dayOfWeek },
-  });
-
-  if (!template || template.isClosed || !template.startTime || !template.endTime) {
-    return { isClosed: true, startTime: null, endTime: null };
-  }
-
-  return {
-    isClosed: false,
-    startTime: template.startTime,
-    endTime: template.endTime,
-  };
+interface Range {
+  start: number;
+  end: number;
 }
 
-// Returns bookable start times ("HH:mm") for a given date + service,
-// accounting for business hours and existing (non-cancelled) bookings
-// that day. Used both to show slots to the customer and to re-validate
-// their chosen slot is still free at the moment they actually book.
-export async function getAvailableSlots(
-  dateStr: string,
-  serviceId: string
-): Promise<string[]> {
-  // The date picker's `min` attribute only stops the UI from offering a
-  // past date — it doesn't stop someone calling the Server Action
-  // directly, so the past-date rejection has to live here too.
-  const todayStr = getTodayInBusinessZone();
-  if (dateStr < todayStr) {
-    return [];
-  }
-
-  const service = await prisma.service.findUnique({ where: { id: serviceId } });
-  if (!service) {
-    return [];
-  }
-
-  const { isClosed, startTime, endTime } = await getDayHours(dateStr);
-  if (isClosed || !startTime || !endTime) {
-    return [];
-  }
-
-  const dayStart = timeStringToMinutes(startTime);
-  const dayEnd = timeStringToMinutes(endTime);
-  const duration = service.duration;
-
-  // The business day runs midnight-to-midnight in local time, which is
-  // not the same as midnight-to-midnight UTC while BST is in effect.
-  const dayStartInstant = zonedWallTimeToUtc(dateStr, "00:00");
-  const dayEndInstant = zonedWallTimeToUtc(addDays(dateStr, 1), "00:00");
-
-  const existingBookings = await prisma.booking.findMany({
+// Time ranges (minutes from midnight, business time) already taken by
+// non-cancelled bookings, grouped by calendar date. `toDate` is exclusive.
+async function getBookedRangesByDate(
+  fromDate: string,
+  toDate: string
+): Promise<Map<string, Range[]>> {
+  const bookings = await prisma.booking.findMany({
     where: {
-      scheduledAt: { gte: dayStartInstant, lt: dayEndInstant },
+      scheduledAt: {
+        gte: zonedWallTimeToUtc(fromDate, "00:00"),
+        lt: zonedWallTimeToUtc(toDate, "00:00"),
+      },
       status: { not: "CANCELLED" },
     },
     include: { service: true },
   });
 
-  const bookedRanges = existingBookings.map((booking) => {
-    const { minutes: start } = getZonedParts(booking.scheduledAt);
-    return { start, end: start + booking.service.duration };
-  });
+  const byDate = new Map<string, Range[]>();
+  for (const booking of bookings) {
+    const { date, minutes } = getZonedParts(booking.scheduledAt);
+    const ranges = byDate.get(date) ?? [];
+    ranges.push({ start: minutes, end: minutes + booking.service.duration });
+    byDate.set(date, ranges);
+  }
 
-  const nowParts = getZonedParts(new Date());
-  const isToday = dateStr === nowParts.date;
-  const nowMinutes = nowParts.minutes;
+  return byDate;
+}
 
-  const slots: string[] = [];
-  for (
-    let start = dayStart;
-    start + duration <= dayEnd;
-    start += SLOT_STEP_MINUTES
-  ) {
-    if (isToday && start <= nowMinutes) {
-      continue;
+// Which of a date's opened start times a service can still use: not in the
+// past, and not overlapping an existing booking.
+function freeStartTimes(
+  dateStr: string,
+  startTimes: string[],
+  bookedRanges: Range[],
+  duration: number
+): string[] {
+  const now = getZonedParts(new Date());
+
+  return startTimes.filter((time) => {
+    const start = timeStringToMinutes(time);
+
+    if (dateStr === now.date && start <= now.minutes) {
+      return false;
     }
 
     const end = start + duration;
-    const overlapsExisting = bookedRanges.some(
+    return !bookedRanges.some(
       (range) => start < range.end && end > range.start
     );
+  });
+}
 
-    if (!overlapsExisting) {
-      slots.push(minutesToTimeString(start));
+// Returns bookable start times ("HH:mm") for a date + service. Used both to
+// show times to the customer and to re-validate their choice at the moment
+// they book.
+export async function getAvailableSlots(
+  dateStr: string,
+  serviceId: string
+): Promise<string[]> {
+  // The UI only offers real dates, but the Server Action can be called
+  // directly, so past dates are rejected here too.
+  if (dateStr < getTodayInBusinessZone()) {
+    return [];
+  }
+
+  const service = await prisma.service.findUnique({ where: { id: serviceId } });
+  if (!service || !service.isActive) {
+    return [];
+  }
+
+  const slots = await prisma.availableSlot.findMany({
+    where: { date: parseDateOnly(dateStr) },
+    orderBy: { startTime: "asc" },
+  });
+  if (slots.length === 0) {
+    return [];
+  }
+
+  const bookedByDate = await getBookedRangesByDate(
+    dateStr,
+    addDays(dateStr, 1)
+  );
+
+  return freeStartTimes(
+    dateStr,
+    slots.map((slot) => slot.startTime),
+    bookedByDate.get(dateStr) ?? [],
+    service.duration
+  );
+}
+
+// Upcoming dates ("YYYY-MM-DD") that have at least one time this service
+// can still book.
+export async function getAvailableDates(serviceId: string): Promise<string[]> {
+  const today = getTodayInBusinessZone();
+
+  const service = await prisma.service.findUnique({ where: { id: serviceId } });
+  if (!service || !service.isActive) {
+    return [];
+  }
+
+  const slots = await prisma.availableSlot.findMany({
+    where: { date: { gte: parseDateOnly(today) } },
+    orderBy: [{ date: "asc" }, { startTime: "asc" }],
+  });
+  if (slots.length === 0) {
+    return [];
+  }
+
+  const timesByDate = new Map<string, string[]>();
+  for (const slot of slots) {
+    const dateStr = toDateString(slot.date);
+    timesByDate.set(dateStr, [
+      ...(timesByDate.get(dateStr) ?? []),
+      slot.startTime,
+    ]);
+  }
+
+  const lastDate = toDateString(slots[slots.length - 1].date);
+  const bookedByDate = await getBookedRangesByDate(today, addDays(lastDate, 1));
+
+  const dates: string[] = [];
+  for (const [dateStr, times] of timesByDate) {
+    const free = freeStartTimes(
+      dateStr,
+      times,
+      bookedByDate.get(dateStr) ?? [],
+      service.duration
+    );
+    if (free.length > 0) {
+      dates.push(dateStr);
+    }
+    if (dates.length >= MAX_DATES_OFFERED) {
+      break;
     }
   }
 
-  return slots;
+  return dates;
 }
