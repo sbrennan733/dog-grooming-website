@@ -6,6 +6,8 @@ import { inputClassName } from "@/components/ui/form-styles";
 import { fetchAvailableSlots, createBooking } from "@/app/booking/actions";
 import { getTodayInBusinessZone } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
+import { priceDisclaimer } from "@/data/services";
+import { dogSizeLabels, priceForSize } from "@/lib/dog-size";
 import type { Dog, Service } from "@/generated/prisma/client";
 
 interface BookingWizardProps {
@@ -109,7 +111,9 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               }`}
             >
               <p className="font-semibold text-ink">{dog.name}</p>
-              <p className="text-sm text-muted">{dog.breed}</p>
+              <p className="text-sm text-muted">
+                {dog.breed} &middot; {dogSizeLabels[dog.size]}
+              </p>
               <p className="mt-1 text-xs text-muted">
                 {dog.assessmentCompletedAt
                   ? "Approved for Grooming"
@@ -149,13 +153,21 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
                 <p className="font-semibold text-ink">{service.name}</p>
                 <p className="text-sm text-muted">{service.description}</p>
                 <p className="mt-1 text-sm font-medium text-ink">
-                  {formatPrice(service.price)}
+                  {service.isFromPrice && "From "}
+                  {formatPrice(priceForSize(service, selectedDog.size))}
                   {businessInfo.payment.depositsEnabled &&
                     ` (${formatPrice(service.deposit)} deposit)`}
                 </p>
+                {service.priceNote && (
+                  <p className="mt-1 text-xs text-muted">{service.priceNote}</p>
+                )}
               </button>
             ))}
           </div>
+
+          {!needsAssessment && (
+            <p className="mt-4 text-sm text-muted">{priceDisclaimer}</p>
+          )}
         </section>
       )}
 
@@ -247,7 +259,12 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               ) : (
                 <>
                   <dt>Price</dt>
-                  <dd>{formatPrice(selectedService.price)}</dd>
+                  <dd>
+                    {selectedService.isFromPrice && "From "}
+                    {formatPrice(
+                      priceForSize(selectedService, selectedDog.size)
+                    )}
+                  </dd>
                 </>
               )}
             </div>

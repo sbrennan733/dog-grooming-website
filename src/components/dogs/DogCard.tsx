@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Dog } from "@/generated/prisma/client";
+import { dogSizeLabels } from "@/lib/dog-size";
 
 interface DogCardProps {
   dog: Dog;
@@ -14,8 +15,8 @@ export default function DogCard({ dog }: DogCardProps) {
         <div>
           <h3 className="text-xl text-ink">{dog.name}</h3>
           <p className="text-muted">
-            {dog.breed} &middot; {dog.age} {dog.age === 1 ? "year" : "years"}{" "}
-            old
+            {dog.breed} &middot; {dogSizeLabels[dog.size]} &middot; {dog.age}{" "}
+            {dog.age === 1 ? "year" : "years"} old
           </p>
         </div>
 

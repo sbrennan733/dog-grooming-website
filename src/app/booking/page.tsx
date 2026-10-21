@@ -28,7 +28,10 @@ export default async function BookingPage() {
           orderBy: { createdAt: "asc" },
         })
       : Promise.resolve([]),
-    prisma.service.findMany({ orderBy: { price: "asc" } }),
+    prisma.service.findMany({
+      where: { isActive: true },
+      orderBy: [{ priceSmall: "asc" }, { name: "asc" }],
+    }),
   ]);
 
   return (

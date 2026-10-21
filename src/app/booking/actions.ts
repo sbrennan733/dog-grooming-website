@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/availability";
 import { zonedWallTimeToUtc } from "@/lib/timezone";
+import { priceForSize } from "@/lib/dog-size";
 
 export async function fetchAvailableSlots(
   date: string,
@@ -44,7 +45,7 @@ export async function createBooking(
   const service = await prisma.service.findUnique({
     where: { id: input.serviceId },
   });
-  if (!service) {
+  if (!service || !service.isActive) {
     return { error: "That service could not be found." };
   }
 
@@ -75,7 +76,7 @@ export async function createBooking(
       dogId: dog.id,
       serviceId: service.id,
       scheduledAt,
-      priceAtBooking: service.price,
+      priceAtBooking: priceForSize(service, dog.size),
       depositAtBooking: service.deposit,
     },
   });

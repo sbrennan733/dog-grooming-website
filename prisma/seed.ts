@@ -24,27 +24,36 @@ const defaultWeeklyHours = [
 
 async function main() {
   for (const service of services) {
+    const data = {
+      description: service.description,
+      duration: service.duration,
+      priceSmall: toPence(service.prices.small),
+      priceMedium: toPence(service.prices.medium),
+      priceLarge: toPence(service.prices.large),
+      isFromPrice: service.isFromPrice ?? false,
+      priceNote: service.priceNote ?? null,
+      deposit: toPence(service.deposit),
+      isAssessment: service.isAssessment ?? false,
+      isActive: true,
+    };
+
     await prisma.service.upsert({
       where: { name: service.name },
-      update: {
-        description: service.description,
-        duration: service.duration,
-        price: toPence(service.price),
-        deposit: toPence(service.deposit),
-        isAssessment: service.name === "Assessment Visit",
-      },
-      create: {
-        name: service.name,
-        description: service.description,
-        duration: service.duration,
-        price: toPence(service.price),
-        deposit: toPence(service.deposit),
-        isAssessment: service.name === "Assessment Visit",
-      },
+      update: data,
+      create: { name: service.name, ...data },
     });
   }
 
-  console.log(`Seeded ${services.length} services.`);
+  // Services that are no longer on the list are retired rather than deleted,
+  // so bookings made for them keep working.
+  const retired = await prisma.service.updateMany({
+    where: { name: { notIn: services.map((service) => service.name) } },
+    data: { isActive: false },
+  });
+
+  console.log(
+    `Seeded ${services.length} services (${retired.count} retired).`
+  );
 
   for (const day of defaultWeeklyHours) {
     await prisma.availabilityTemplate.upsert({
