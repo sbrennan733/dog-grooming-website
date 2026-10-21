@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
-import BookingStatusSelect from "@/components/admin/BookingStatusSelect";
+import BookingActions from "@/components/admin/BookingActions";
 import MarkAssessmentButton from "@/components/admin/MarkAssessmentButton";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
 import { priceForDog } from "@/lib/dog-size";
+import type { BookingStatus } from "@/generated/prisma/client";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -18,16 +20,60 @@ function formatPrice(pence: number): string {
   return `£${(pence / 100).toFixed(2)}`;
 }
 
-export default async function AdminPage() {
+// Row tint so confirmed and cancelled bookings stand out at a glance. The
+// status label in the row says the same in words.
+const ROW_STYLES: Record<BookingStatus, string> = {
+  PENDING: "",
+  CONFIRMED: "bg-ok-soft",
+  CANCELLED: "bg-danger-soft",
+  COMPLETED: "",
+};
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
   await requireAdmin();
 
-  const [bookings, unreadMessages] = await Promise.all([
-    prisma.booking.findMany({
-      include: { user: true, dog: true, service: true },
-      orderBy: { scheduledAt: "asc" },
-    }),
-    prisma.contactMessage.count({ where: { isRead: false } }),
-  ]);
+  const { view } = await searchParams;
+  const showingPast = view === "past";
+  const now = new Date();
+
+  // Upcoming: anything still open, plus cancellations that haven't happened
+  // yet. Past: completed bookings and cancellations whose time has gone.
+  const upcomingWhere = {
+    OR: [
+      { status: { in: ["PENDING", "CONFIRMED"] as BookingStatus[] } },
+      { status: "CANCELLED" as BookingStatus, scheduledAt: { gte: now } },
+    ],
+  };
+  const pastWhere = {
+    OR: [
+      { status: "COMPLETED" as BookingStatus },
+      { status: "CANCELLED" as BookingStatus, scheduledAt: { lt: now } },
+    ],
+  };
+
+  const [bookings, upcomingCount, pastCount, unreadMessages] =
+    await Promise.all([
+      prisma.booking.findMany({
+        where: showingPast ? pastWhere : upcomingWhere,
+        include: { user: true, dog: true, service: true },
+        orderBy: { scheduledAt: showingPast ? "desc" : "asc" },
+        take: 300,
+      }),
+      prisma.booking.count({ where: upcomingWhere }),
+      prisma.booking.count({ where: pastWhere }),
+      prisma.contactMessage.count({ where: { isRead: false } }),
+    ]);
+
+  const tabClass = (active: boolean) =>
+    `rounded-full px-5 py-2 text-sm font-bold transition ${
+      active
+        ? "bg-brand text-on-brand"
+        : "border-2 border-line-input bg-surface text-ink hover:border-brand"
+    }`;
 
   return (
     <div className="bg-background px-6 py-20">
@@ -48,10 +94,37 @@ export default async function AdminPage() {
           </div>
         </div>
 
+        <nav aria-label="Booking views" className="mb-6 flex flex-wrap gap-3">
+          <Link
+            href="/admin"
+            aria-current={showingPast ? undefined : "page"}
+            className={tabClass(!showingPast)}
+          >
+            Upcoming ({upcomingCount})
+          </Link>
+
+          <Link
+            href="/admin?view=past"
+            aria-current={showingPast ? "page" : undefined}
+            className={tabClass(showingPast)}
+          >
+            Past bookings ({pastCount})
+          </Link>
+        </nav>
+
         {bookings.length === 0 ? (
-          <p className="text-muted">No bookings yet.</p>
+          <p className="text-muted">
+            {showingPast
+              ? "No past bookings yet. Completed appointments will appear here."
+              : "No upcoming bookings."}
+          </p>
         ) : (
-          <div className="overflow-x-auto rounded-3xl bg-surface p-6 shadow-soft">
+          <div
+            role="region"
+            aria-label={showingPast ? "Past bookings" : "Upcoming bookings"}
+            tabIndex={0}
+            className="overflow-x-auto rounded-3xl bg-surface p-6 shadow-soft"
+          >
             <table className="w-full border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-line text-muted">
@@ -69,17 +142,18 @@ export default async function AdminPage() {
               </thead>
               <tbody>
                 {bookings.map((booking) => (
-                  <tr key={booking.id} className="border-b border-line last:border-b-0">
-                    <td className="py-3 pr-4 text-ink">
+                  <tr
+                    key={booking.id}
+                    className={`border-b border-line last:border-b-0 ${ROW_STYLES[booking.status]}`}
+                  >
+                    <td className="py-3 pl-3 pr-4 text-ink">
                       {booking.user.name}
                     </td>
-                    <td className="py-3 pr-4 text-ink">
-                      {booking.dog.name}
-                    </td>
+                    <td className="py-3 pr-4 text-ink">{booking.dog.name}</td>
                     <td className="py-3 pr-4 text-ink">
                       {booking.service.name}
                     </td>
-                    <td className="py-3 pr-4 whitespace-nowrap text-muted">
+                    <td className="py-3 pr-4 whitespace-nowrap text-ink">
                       {booking.scheduledAt.toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "short",
@@ -91,26 +165,30 @@ export default async function AdminPage() {
                         timeZone: BUSINESS_TIME_ZONE,
                       })}
                     </td>
-                    <td className="py-3 pr-4 text-muted">
+                    <td className="py-3 pr-4 text-ink">
                       {priceForDog(booking.service, booking.dog).isFrom &&
                         "From "}
                       {formatPrice(booking.priceAtBooking)}
                     </td>
                     {businessInfo.payment.depositsEnabled && (
-                      <td className="py-3 pr-4 text-muted">
+                      <td className="py-3 pr-4 text-ink">
                         {formatPrice(booking.depositAtBooking)}
                       </td>
                     )}
                     <td className="py-3 pr-4">
-                      <BookingStatusSelect
+                      <BookingActions
                         bookingId={booking.id}
                         status={booking.status}
-                        label={`${booking.user.name}, ${booking.dog.name}`}
+                        hasPassed={booking.scheduledAt <= now}
+                        customerName={booking.user.name}
+                        customerEmail={booking.user.email}
+                        dogName={booking.dog.name}
                       />
                     </td>
                     <td className="py-3 pr-4">
                       {booking.service.isAssessment &&
-                        !booking.dog.assessmentCompletedAt && (
+                        !booking.dog.assessmentCompletedAt &&
+                        booking.status !== "CANCELLED" && (
                           <MarkAssessmentButton
                             dogId={booking.dog.id}
                             dogName={booking.dog.name}

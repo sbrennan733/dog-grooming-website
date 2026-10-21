@@ -2,9 +2,9 @@ import type { BookingStatus } from "@/generated/prisma/client";
 
 const STYLES: Record<BookingStatus, string> = {
   PENDING: "bg-warn-soft text-warn-ink",
-  CONFIRMED: "bg-info-soft text-info-ink",
-  COMPLETED: "bg-ok-soft text-ok-ink",
-  CANCELLED: "bg-neutral-soft text-neutral-ink",
+  CONFIRMED: "bg-ok-soft text-ok-ink",
+  COMPLETED: "bg-info-soft text-info-ink",
+  CANCELLED: "bg-danger-soft text-danger-ink",
 };
 
 const LABELS: Record<BookingStatus, string> = {
