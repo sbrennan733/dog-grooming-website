@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { businessInfo } from "@/data/business";
-import { galleryImages } from "@/data/gallery";
+import { beforeAfterPairs } from "@/data/gallery";
 
-const aboutImage = galleryImages[1];
+const aboutImage = beforeAfterPairs[1].after;
 
 export default function About() {
   return (
@@ -28,11 +28,11 @@ export default function About() {
           <div className="overflow-hidden rounded-[2.25rem] shadow-lift">
             <Image
               src={aboutImage.src}
-              alt={aboutImage.alt}
+              alt="Fluffy tan and white dog with a freshly brushed-out coat"
               width={aboutImage.width}
               height={aboutImage.height}
               sizes="(min-width: 768px) 50vw, 100vw"
-              className="aspect-[4/5] w-full object-cover"
+              className="aspect-[4/3] w-full object-cover"
             />
           </div>
 
