@@ -16,17 +16,18 @@ export default function GalleryPage() {
         </h1>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {galleryImages.map((image, index) => (
+          {galleryImages.map((image) => (
             <div
-              key={image}
+              key={image.src}
               className="overflow-hidden rounded-3xl shadow-soft"
             >
               <Image
-                src={image}
-                alt={`Groomed dog, photo ${index + 1}`}
-                width={500}
-                height={500}
-                className="h-80 w-full object-cover transition duration-300 hover:scale-105"
+                src={image.src}
+                alt={image.alt}
+                width={image.width}
+                height={image.height}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="aspect-[3/4] w-full object-cover transition duration-300 hover:scale-105"
               />
             </div>
           ))}
