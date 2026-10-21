@@ -7,7 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "make-admin": "tsx prisma/make-admin.ts"
   },
   "dependencies": {
     "@auth/core": "^0.41.3",
