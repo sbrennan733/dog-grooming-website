@@ -7,7 +7,7 @@ export const businessInfo: BusinessInfo = {
     "Friendly, professional dog grooming tailored to the individual needs of every dog.",
 
   contact: {
-    phone: "01234 567890",
+    phone: "07784 474501",
     email: "bubblesandbarks30@outlook.com",
     address: "Belfast, Northern Ireland",
   },

@@ -57,7 +57,7 @@ export default async function Footer() {
               <li className="flex items-center gap-2">
                 <Phone size={16} aria-hidden="true" className="shrink-0" />
                 <a
-                  href={`tel:${businessInfo.contact.phone}`}
+                  href={`tel:${businessInfo.contact.phone.replace(/\s/g, "")}`}
                   className="hover:text-white"
                 >
                   {businessInfo.contact.phone}
