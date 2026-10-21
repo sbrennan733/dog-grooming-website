@@ -33,6 +33,8 @@
 
   /* Feedback and status */
   --color-danger: #b42318;
+  --color-danger-soft: #fbe4e0;
+  --color-danger-ink: #8a1c12;
   --color-warn-soft: #fdefc7;
   --color-warn-ink: #7a4b00;
   --color-info-soft: #e1eefb;
