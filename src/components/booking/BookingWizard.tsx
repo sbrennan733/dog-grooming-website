@@ -11,6 +11,13 @@ import {
 import { formatDateString } from "@/lib/format-date";
 import { businessInfo } from "@/data/business";
 import { priceDisclaimer } from "@/data/services";
+import { CONSENT_VERSION } from "@/data/consent";
+import ConsentStep, {
+  consentProblems,
+  describeProblems,
+  emptyConsent,
+  type ConsentFormValue,
+} from "@/components/booking/ConsentStep";
 import { dogSizeLabels, priceForDog } from "@/lib/dog-size";
 import type { Dog, Service } from "@/generated/prisma/client";
 
@@ -32,8 +39,11 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
   const [loadingDates, setLoadingDates] = useState(false);
   const [slots, setSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
+  const [consent, setConsent] = useState<ConsentFormValue>(emptyConsent);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string>();
+
+  const problems = consentProblems(consent);
 
   const selectedDog = dogs.find((dog) => dog.id === dogId);
   const needsAssessment = selectedDog
@@ -86,14 +96,25 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
   }
 
   async function handleConfirm() {
-    if (!dogId || !serviceId || !date || !time) {
+    if (!dogId || !serviceId || !date || !time || problems.length > 0) {
       return;
     }
 
     setSubmitting(true);
     setError(undefined);
 
-    const result = await createBooking({ dogId, serviceId, date, time });
+    const result = await createBooking({
+      dogId,
+      serviceId,
+      date,
+      time,
+      consent: {
+        termsVersion: CONSENT_VERSION,
+        agreedStatementIds: consent.agreedStatementIds,
+        photoPermission: consent.photoPermission,
+        signedName: consent.signedName,
+      },
+    });
 
     if (result?.error) {
       setError(result.error);
@@ -263,9 +284,19 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
       )}
 
       {time && selectedDog && selectedService && (
+        <section>
+          <h2 className="mb-4 text-xl text-ink">
+            4. Terms &amp; Consent
+          </h2>
+
+          <ConsentStep value={consent} onChange={setConsent} />
+        </section>
+      )}
+
+      {time && selectedDog && selectedService && (
         <section className="rounded-3xl bg-surface-alt p-6">
           <h2 className="mb-4 text-xl text-ink">
-            4. Confirm Booking
+            5. Confirm Booking
           </h2>
 
           <dl className="mb-6 space-y-2 text-sm text-muted">
@@ -318,10 +349,16 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
             </p>
           )}
 
+          {problems.length > 0 && (
+            <p role="status" className="mb-4 text-sm text-muted">
+              Before you can confirm, please {describeProblems(problems)}.
+            </p>
+          )}
+
           <Button
             type="button"
             onClick={handleConfirm}
-            disabled={submitting}
+            disabled={submitting || problems.length > 0}
             className="w-full sm:w-auto"
           >
             {submitting ? "Booking..." : "Confirm Booking"}

@@ -59,7 +59,12 @@ export default async function AdminPage({
     await Promise.all([
       prisma.booking.findMany({
         where: showingPast ? pastWhere : upcomingWhere,
-        include: { user: true, dog: true, service: true },
+        include: {
+          user: true,
+          dog: true,
+          service: true,
+          consent: { select: { id: true } },
+        },
         orderBy: { scheduledAt: showingPast ? "desc" : "asc" },
         take: 300,
       }),
@@ -123,7 +128,7 @@ export default async function AdminPage({
             role="region"
             aria-label={showingPast ? "Past bookings" : "Upcoming bookings"}
             tabIndex={0}
-            className="overflow-x-auto rounded-3xl bg-surface p-6 shadow-soft"
+            className="relative overflow-x-auto rounded-3xl bg-surface p-6 shadow-soft"
           >
             <table className="w-full border-collapse text-left text-sm">
               <thead>
@@ -137,6 +142,7 @@ export default async function AdminPage({
                     <th className="py-3 pr-4 font-medium">Deposit</th>
                   )}
                   <th className="py-3 pr-4 font-medium">Status</th>
+                  <th className="py-3 pr-4 font-medium">Consent form</th>
                   <th className="py-3 pr-4 font-medium">Assessment</th>
                 </tr>
               </thead>
@@ -184,6 +190,23 @@ export default async function AdminPage({
                         customerEmail={booking.user.email}
                         dogName={booking.dog.name}
                       />
+                    </td>
+                    <td className="py-3 pr-4">
+                      {booking.consent ? (
+                        <a
+                          href={`/admin/bookings/${booking.id}/consent`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-bold text-brand hover:underline"
+                        >
+                          View PDF
+                          <span className="sr-only">
+                            {` for ${booking.user.name}, ${booking.dog.name} (opens in a new tab)`}
+                          </span>
+                        </a>
+                      ) : (
+                        <span className="text-muted">Not signed</span>
+                      )}
                     </td>
                     <td className="py-3 pr-4">
                       {booking.service.isAssessment &&

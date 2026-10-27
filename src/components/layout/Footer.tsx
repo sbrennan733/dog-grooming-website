@@ -123,7 +123,10 @@ export default async function Footer() {
 
         <div className="mt-12 border-t border-white/15 pt-6 text-center text-sm">
           © {new Date().getFullYear()} {businessInfo.name}. All rights
-          reserved.
+          reserved.{" "}
+          <Link href="/terms" className="underline hover:text-white">
+            Terms &amp; Consent
+          </Link>
         </div>
 
       </div>
