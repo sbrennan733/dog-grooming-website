@@ -86,6 +86,17 @@ export default function ConsentStep({ value, onChange }: ConsentStepProps) {
           Open the terms in a new tab
           <span className="sr-only"> (opens in a new tab)</span>
         </Link>
+        . How we handle your information is in our{" "}
+        <Link
+          href="/privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-bold text-brand hover:underline"
+        >
+          Privacy Notice
+          <span className="sr-only"> (opens in a new tab)</span>
+        </Link>
+        .
       </p>
 
       <div className="rounded-2xl border border-line bg-surface p-5">

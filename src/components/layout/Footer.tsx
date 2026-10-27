@@ -126,6 +126,9 @@ export default async function Footer() {
           reserved.{" "}
           <Link href="/terms" className="underline hover:text-white">
             Terms &amp; Consent
+          </Link>{" "}
+          <Link href="/privacy" className="underline hover:text-white">
+            Privacy Notice
           </Link>
         </div>
 

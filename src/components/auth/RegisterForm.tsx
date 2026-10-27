@@ -61,6 +61,14 @@ export default function RegisterForm() {
       </Button>
 
       <p className="text-sm text-muted">
+        We use your details to manage your bookings. See our{" "}
+        <Link href="/privacy" className="font-bold text-brand hover:underline">
+          Privacy Notice
+        </Link>
+        .
+      </p>
+
+      <p className="text-sm text-muted">
         Already have an account?{" "}
         <Link
           href="/login"
