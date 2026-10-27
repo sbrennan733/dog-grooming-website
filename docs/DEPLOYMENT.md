@@ -82,8 +82,12 @@ Keep test emails few: Microsoft suspended the sending account once already.
 - **Microsoft token:** it expires after 90 days without use. If emails stop,
   run `node scripts/get-microsoft-refresh-token.mjs <client-id>` and update
   `MS_REFRESH_TOKEN` in Vercel, then redeploy.
-- **Database changes:** after a schema change, run `npm run db:deploy` against
-  the Neon direct URL (as in step 2) before deploying the code.
+- **Database changes:** after a schema change, run `npm run db:deploy:live`
+  (it asks for the Neon direct address, hidden) BEFORE merging the code, so
+  the live site never runs ahead of its database.
+- **Terms and consent wording** lives in `src/data/consent.ts`. Change
+  `CONSENT_VERSION` whenever the wording changes; every booking stores the
+  exact wording it was signed under.
 - **Plans:** Vercel's free Hobby plan is for personal, non-commercial use. A
   site that takes real bookings for a business should be on a paid plan
   (check the current terms on Vercel's pricing page).
