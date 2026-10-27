@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "make-admin": "tsx prisma/make-admin.ts",
+    "make-admin:live": "tsx prisma/make-admin.ts --live",
     "db:start": "prisma dev start dgw",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed"

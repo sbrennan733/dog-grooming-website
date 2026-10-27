@@ -23,15 +23,20 @@ for this terminal window and overrides `.env`, so your local database is not
 touched.
 
 ```powershell
-$env:DATABASE_URL = "PASTE-THE-DIRECT-URL-HERE"
+$env:DATABASE_URL = 'PASTE-THE-DIRECT-URL-HERE'   # single quotes!
 
 npm run db:deploy      # creates all the tables
 npm run db:seed        # adds the services and placeholder opening hours
 
-$env:ADMIN_PASSWORD = "the-owners-real-password"
-npm run make-admin -- bubblesandbarks30@outlook.com "Karen"
+Remove-Item Env:DATABASE_URL
+```
 
-Remove-Item Env:DATABASE_URL, Env:ADMIN_PASSWORD
+Then create the owner's admin login with the guided command. It asks for the
+database address and a password and hides what you type, so nothing needs
+quoting and nothing is left in your terminal history:
+
+```powershell
+npm run make-admin:live
 ```
 
 The admin account is created already verified. Use a fresh password (not one
