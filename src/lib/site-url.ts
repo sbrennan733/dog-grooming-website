@@ -12,6 +12,13 @@ export async function getSiteUrl(): Promise<string> {
     return configured.replace(/\/+$/, "");
   }
 
+  // On Vercel the platform provides the production address itself (set by
+  // Vercel, not by the request), so deployments work before AUTH_URL is set.
+  const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercelHost) {
+    return `https://${vercelHost}`;
+  }
+
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       "AUTH_URL must be set in production so emailed links point at the real site."
