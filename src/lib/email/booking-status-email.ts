@@ -90,7 +90,7 @@ export function buildBookingStatusEmail(input: BookingEmailInput): EmailMessage 
 
   const html = `<!doctype html>
 <html>
-  <body style="margin:0;padding:24px;background:#fbf7f2;font-family:Arial,Helvetica,sans-serif;color:#2b2622;">
+  <body style="margin:0;padding:24px;background:#fdf8fa;font-family:Arial,Helvetica,sans-serif;color:#2a2730;">
     <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px;">
       <h1 style="margin:0 0 16px;font-size:22px;color:${accent};">${confirmed ? "Booking confirmed" : "Booking cancelled"}</h1>
       <p style="margin:0 0 16px;line-height:1.5;">Hi ${escapeHtml(firstName)},</p>
@@ -99,7 +99,7 @@ export function buildBookingStatusEmail(input: BookingEmailInput): EmailMessage 
         ${details
           .map(
             ([label, value]) =>
-              `<tr><td style="padding:6px 12px 6px 0;color:#6b625b;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(value)}</td></tr>`
+              `<tr><td style="padding:6px 12px 6px 0;color:#645c66;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(value)}</td></tr>`
           )
           .join("\n        ")}
       </table>

@@ -29,7 +29,7 @@ export default function ContactInfo() {
 
             <a
               href={`tel:${businessInfo.contact.phone.replace(/\s/g, "")}`}
-              className="text-muted transition-colors hover:text-brand"
+              className="text-muted underline underline-offset-2 transition-colors hover:text-brand"
             >
               {businessInfo.contact.phone}
             </a>
@@ -50,7 +50,7 @@ export default function ContactInfo() {
 
             <a
               href={`mailto:${businessInfo.contact.email}`}
-              className="[overflow-wrap:anywhere] text-muted transition-colors hover:text-brand"
+              className="[overflow-wrap:anywhere] text-muted underline underline-offset-2 transition-colors hover:text-brand"
             >
               <EmailText email={businessInfo.contact.email} />
             </a>
@@ -93,7 +93,7 @@ export default function ContactInfo() {
                 href={businessInfo.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted transition-colors hover:text-brand"
+                className="text-muted underline underline-offset-2 transition-colors hover:text-brand"
               >
                 Find us on Facebook
                 <span className="sr-only"> (opens in a new tab)</span>

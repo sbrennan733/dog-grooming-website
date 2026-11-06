@@ -55,16 +55,16 @@ export function buildConsentEmail(input: ConsentEmailInput): EmailMessage {
 
   const html = `<!doctype html>
 <html>
-  <body style="margin:0;padding:24px;background:#fbf7f2;font-family:Arial,Helvetica,sans-serif;color:#2b2622;">
+  <body style="margin:0;padding:24px;background:#fdf8fa;font-family:Arial,Helvetica,sans-serif;color:#2a2730;">
     <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px;">
-      <h1 style="margin:0 0 16px;font-size:20px;color:#0f766e;">Signed consent form</h1>
+      <h1 style="margin:0 0 16px;font-size:20px;color:#0b7885;">Signed consent form</h1>
       <p style="margin:0 0 16px;line-height:1.5;">${escapeHtml(singleLine(customerName))} has booked and signed the consent form.</p>
       <table style="border-collapse:collapse;margin:0 0 20px;width:100%;">
-        <tr><td style="padding:6px 12px 6px 0;color:#6b625b;">Dog</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(safeDog)}</td></tr>
-        <tr><td style="padding:6px 12px 6px 0;color:#6b625b;">Owner</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(singleLine(customerName))} (${escapeHtml(customerEmail)})</td></tr>
-        <tr><td style="padding:6px 12px 6px 0;color:#6b625b;">Service</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(serviceName)}</td></tr>
-        <tr><td style="padding:6px 12px 6px 0;color:#6b625b;">Appointment</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(when)}</td></tr>
-        <tr><td style="padding:6px 12px 6px 0;color:#6b625b;">Photos</td><td style="padding:6px 0;font-weight:bold;">${photoPermission ? "Permission given" : "Permission NOT given"}</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#645c66;">Dog</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(safeDog)}</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#645c66;">Owner</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(singleLine(customerName))} (${escapeHtml(customerEmail)})</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#645c66;">Service</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(serviceName)}</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#645c66;">Appointment</td><td style="padding:6px 0;font-weight:bold;">${escapeHtml(when)}</td></tr>
+        <tr><td style="padding:6px 12px 6px 0;color:#645c66;">Photos</td><td style="padding:6px 0;font-weight:bold;">${photoPermission ? "Permission given" : "Permission NOT given"}</td></tr>
       </table>
       <p style="margin:0;line-height:1.5;">The signed form is attached as a PDF so you have a record of this visit. You can also download it from the booking in the Admin area.</p>
     </div>

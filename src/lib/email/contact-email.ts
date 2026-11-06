@@ -29,14 +29,14 @@ export function buildContactNotificationEmail(input: {
 
   const html = `<!doctype html>
 <html>
-  <body style="margin:0;padding:24px;background:#fbf7f2;font-family:Arial,Helvetica,sans-serif;color:#2b2622;">
+  <body style="margin:0;padding:24px;background:#fdf8fa;font-family:Arial,Helvetica,sans-serif;color:#2a2730;">
     <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px;">
       <h1 style="margin:0 0 16px;font-size:20px;">New website message</h1>
       <p style="margin:0 0 4px;"><strong>Name:</strong> ${escapeHtml(singleLine(name))}</p>
       <p style="margin:0 0 4px;"><strong>Email:</strong> ${escapeHtml(email)}</p>
       <p style="margin:0 0 16px;"><strong>Subject:</strong> ${escapeHtml(singleLine(subject))}</p>
       <p style="margin:0 0 16px;line-height:1.5;white-space:pre-wrap;">${escapeHtml(message)}</p>
-      <p style="margin:0;font-size:14px;color:#6b625b;">Hit reply to answer ${escapeHtml(singleLine(name))} directly.</p>
+      <p style="margin:0;font-size:14px;color:#645c66;">Hit reply to answer ${escapeHtml(singleLine(name))} directly.</p>
     </div>
   </body>
 </html>`;
