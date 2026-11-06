@@ -53,6 +53,7 @@ model User {
   dogs                    Dog[]
   bookings                Booking[]
   emailVerificationTokens EmailVerificationToken[]
+  reviews                 Review[]
 }
 
 // Only a SHA-256 hash of each token is stored (the raw token exists only in
@@ -144,6 +145,7 @@ model Booking {
   dog     Dog      @relation(fields: [dogId], references: [id])
   payment Payment?
   consent ConsentRecord?
+  review  Review?
 }
 
 // The terms and consent a customer agreed to when making a booking, kept
@@ -206,4 +208,26 @@ model ContactMessage {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+}
+
+// A customer's review of a finished groom. One per booking, and only for
+// COMPLETED bookings, so every review is from a real customer. Nothing is
+// shown on the website until the owner approves it.
+model Review {
+  id        String       @id @default(cuid())
+  bookingId String       @unique
+  userId    String
+  rating    Int
+  comment   String
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
