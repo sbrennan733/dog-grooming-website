@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import DogCard from "@/components/dogs/DogCard";
 import BookingStatusBadge from "@/components/bookings/BookingStatusBadge";
 import CancelBookingButton from "@/components/bookings/CancelBookingButton";
+import ReviewForm from "@/components/bookings/ReviewForm";
 import ButtonLink from "@/components/ui/ButtonLink";
 import VerificationBanner from "@/components/account/VerificationBanner";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
@@ -36,7 +37,11 @@ export default async function CustomerDashboardPage() {
         }),
         prisma.booking.findMany({
           where: { userId: session.user.id },
-          include: { dog: true, service: true },
+          include: {
+            dog: true,
+            service: true,
+            review: { select: { status: true } },
+          },
           orderBy: { scheduledAt: "asc" },
         }),
       ])
@@ -124,6 +129,25 @@ export default async function CustomerDashboardPage() {
                       <CancelBookingButton bookingId={booking.id} />
                     )}
                 </div>
+
+                {booking.status === "COMPLETED" && (
+                  <div className="w-full">
+                    {booking.review ? (
+                      <p className="text-sm text-muted">
+                        {booking.review.status === "APPROVED"
+                          ? "Thank you, your review is on our website."
+                          : booking.review.status === "PENDING"
+                            ? "Thank you! Your review will appear on our website once it has been approved."
+                            : "Thank you, we have your review."}
+                      </p>
+                    ) : (
+                      <ReviewForm
+                        bookingId={booking.id}
+                        dogName={booking.dog.name}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
