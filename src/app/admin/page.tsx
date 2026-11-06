@@ -162,7 +162,9 @@ export default async function AdminPage({
                   )}
                   <th className="py-3 pr-4 font-medium">Status</th>
                   <th className="py-3 pr-4 font-medium">Consent form</th>
-                  <th className="py-3 pr-4 font-medium">Assessment</th>
+                  {businessInfo.booking.assessmentRequired && (
+                    <th className="py-3 pr-4 font-medium">Assessment</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -227,16 +229,18 @@ export default async function AdminPage({
                         <span className="text-muted">Not signed</span>
                       )}
                     </td>
-                    <td className="py-3 pr-4">
-                      {booking.service.isAssessment &&
-                        !booking.dog.assessmentCompletedAt &&
-                        booking.status !== "CANCELLED" && (
-                          <MarkAssessmentButton
-                            dogId={booking.dog.id}
-                            dogName={booking.dog.name}
-                          />
-                        )}
-                    </td>
+                    {businessInfo.booking.assessmentRequired && (
+                      <td className="py-3 pr-4">
+                        {booking.service.isAssessment &&
+                          !booking.dog.assessmentCompletedAt &&
+                          booking.status !== "CANCELLED" && (
+                            <MarkAssessmentButton
+                              dogId={booking.dog.id}
+                              dogName={booking.dog.name}
+                            />
+                          )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
