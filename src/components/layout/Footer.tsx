@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import EmailText from "@/components/ui/EmailText";
@@ -17,6 +18,14 @@ export default async function Footer() {
 
           {/* Business */}
           <div>
+            <Image
+              src="/images/brand/logo.webp"
+              alt=""
+              width={96}
+              height={96}
+              className="mb-4 h-24 w-24"
+            />
+
             <h2 className="mb-4 text-2xl text-white">
               {businessInfo.name}
             </h2>

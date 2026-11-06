@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, PawPrint, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import MobileMenu from "./MobileMenu";
 import ButtonLink from "@/components/ui/ButtonLink";
@@ -30,18 +31,21 @@ export default function Navbar() {
       aria-label="Main"
       className="sticky top-0 z-50 border-b border-line bg-background/90 backdrop-blur"
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
 
         {/* Logo */}
         <Link
           href="/"
           className="flex items-center gap-2 whitespace-nowrap font-heading text-xl font-semibold text-ink sm:gap-2.5 sm:text-2xl"
         >
-          <PawPrint
-            size={28}
-            aria-hidden="true"
-            className="text-brand"
-            fill="currentColor"
+          {/* Decorative: the name is written out next to it. */}
+          <Image
+            src="/images/brand/logo.webp"
+            alt=""
+            width={56}
+            height={56}
+            priority
+            className="h-11 w-11 sm:h-14 sm:w-14"
           />
           {businessInfo.name}
         </Link>

@@ -16,7 +16,17 @@ const fredoka = Fredoka({
   subsets: ["latin"],
 });
 
+// Link previews (the share image) need an absolute address. Same sources as
+// getSiteUrl(), without its request-header fallback, which would make every
+// page render per request. Left unset in development.
+const siteUrl =
+  process.env.AUTH_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : undefined);
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: {
     default: businessInfo.name,
     template: `%s | ${businessInfo.name}`,
