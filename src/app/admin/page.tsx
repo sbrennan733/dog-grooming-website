@@ -56,8 +56,14 @@ export default async function AdminPage({
     ],
   };
 
-  const [bookings, upcomingCount, pastCount, unreadMessages, dueRecords] =
-    await Promise.all([
+  const [
+    bookings,
+    upcomingCount,
+    pastCount,
+    unreadMessages,
+    dueRecords,
+    pendingReviews,
+  ] = await Promise.all([
       prisma.booking.findMany({
         where: showingPast ? pastWhere : upcomingWhere,
         include: {
@@ -73,6 +79,7 @@ export default async function AdminPage({
       prisma.booking.count({ where: pastWhere }),
       prisma.contactMessage.count({ where: { isRead: false } }),
       prisma.user.count({ where: dueForDeletion(retentionCutoff(now)) }),
+      prisma.review.count({ where: { status: "PENDING" } }),
     ]);
 
   const tabClass = (active: boolean) =>
@@ -93,6 +100,12 @@ export default async function AdminPage({
               {unreadMessages > 0
                 ? `Messages (${unreadMessages} new)`
                 : "Messages"}
+            </ButtonLink>
+
+            <ButtonLink href="/admin/reviews" variant="secondary">
+              {pendingReviews > 0
+                ? `Reviews (${pendingReviews} new)`
+                : "Reviews"}
             </ButtonLink>
 
             <ButtonLink href="/admin/availability" variant="secondary">
