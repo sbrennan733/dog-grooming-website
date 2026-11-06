@@ -1,8 +1,12 @@
 import "dotenv/config";
-import readline from "node:readline";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import {
+  createPrompter,
+  describeDatabaseUrl,
+  extractDatabaseUrl,
+} from "./prompt";
 
 // Creates an admin account, or promotes an existing account to admin.
 //
@@ -42,65 +46,8 @@ function passwordProblem(password: string): string | undefined {
   return undefined;
 }
 
-// --- Prompting (a small line queue so pasted/piped input is never lost) ---
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-const queuedLines: string[] = [];
-let waiting: ((line: string) => void) | undefined;
-let muted = false;
-
-rl.on("line", (line) => {
-  if (waiting) {
-    const resolve = waiting;
-    waiting = undefined;
-    resolve(line);
-  } else {
-    queuedLines.push(line);
-  }
-});
-
-// While muted, the terminal's echo of what you type is dropped.
-const originalWrite = (
-  rl as unknown as { _writeToOutput: (text: string) => void }
-)._writeToOutput.bind(rl);
-(rl as unknown as { _writeToOutput: (text: string) => void })._writeToOutput = (
-  text: string
-) => {
-  if (!muted) {
-    originalWrite(text);
-  }
-};
-
-function ask(question: string, hidden = false): Promise<string> {
-  return new Promise((resolve) => {
-    process.stdout.write(question);
-    muted = hidden;
-
-    const deliver = (line: string) => {
-      muted = false;
-      if (hidden) {
-        process.stdout.write("\n");
-      }
-      resolve(line.trim());
-    };
-
-    const queued = queuedLines.shift();
-    if (queued !== undefined) {
-      deliver(queued);
-    } else {
-      waiting = deliver;
-    }
-  });
-}
-
-// Pulls the address out of whatever was pasted: the bare address, a
-// DATABASE_URL="..." line, or a `psql '...'` command.
-function extractDatabaseUrl(pasted: string): string | undefined {
-  return pasted.match(/postgres(?:ql)?:\/\/[^\s'"]+/)?.[0];
-}
+const prompter = createPrompter();
+const ask = prompter.ask;
 
 // --- The actual work ---
 
@@ -180,21 +127,15 @@ async function guided(): Promise<void> {
     );
   }
 
-  let parsed: URL;
-  try {
-    parsed = new URL(databaseUrl);
-  } catch {
-    fail("That database address isn't valid. Copy the whole string from Neon.");
-  }
-
-  if (!parsed.username || !parsed.password) {
+  const details = describeDatabaseUrl(databaseUrl);
+  if (!details) {
     fail(
       "The address is missing the user or password. Tick 'Show password' in Neon before copying."
     );
   }
 
   console.log(
-    `\nConnecting to ${parsed.hostname} as ${parsed.username} (database ${parsed.pathname.slice(1)}).`
+    `\nConnecting to ${details.host} as ${details.user} (database ${details.database}).`
   );
 
   const email = (await ask(`Admin email [${DEFAULT_EMAIL}]: `)) || DEFAULT_EMAIL;
@@ -212,7 +153,7 @@ async function guided(): Promise<void> {
   }
 
   const confirm = await ask(
-    `\nCreate admin ${email} on ${parsed.hostname}? Type yes to continue: `
+    `\nCreate admin ${email} on ${details.host}? Type yes to continue: `
   );
   if (confirm.toLowerCase() !== "yes") {
     fail("Cancelled. Nothing was created.");
@@ -281,5 +222,5 @@ run()
     process.exitCode = 1;
   })
   .finally(() => {
-    rl.close();
+    prompter.close();
   });

@@ -17,6 +17,11 @@ export interface GraphMessage {
   subject: string;
   html: string;
   replyTo?: string;
+  attachments?: {
+    filename: string;
+    contentType: string;
+    content: Uint8Array;
+  }[];
 }
 
 const DEFAULT_TOKEN_URL =
@@ -122,6 +127,14 @@ export async function sendViaGraph(
           toRecipients: [{ emailAddress: { address: message.to } }],
           ...(message.replyTo && {
             replyTo: [{ emailAddress: { address: message.replyTo } }],
+          }),
+          ...(message.attachments?.length && {
+            attachments: message.attachments.map((attachment) => ({
+              "@odata.type": "#microsoft.graph.fileAttachment",
+              name: attachment.filename,
+              contentType: attachment.contentType,
+              contentBytes: Buffer.from(attachment.content).toString("base64"),
+            })),
           }),
         },
         saveToSentItems: true,

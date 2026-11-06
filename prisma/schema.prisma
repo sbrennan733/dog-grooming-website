@@ -143,6 +143,24 @@ model Booking {
   user    User     @relation(fields: [userId], references: [id])
   dog     Dog      @relation(fields: [dogId], references: [id])
   payment Payment?
+  consent ConsentRecord?
+}
+
+// The terms and consent a customer agreed to when making a booking, kept
+// as the business's record for that visit.
+model ConsentRecord {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  // The name typed as a signature.
+  signedName      String
+  signedAt        DateTime @default(now())
+  termsVersion    String
+  photoPermission Boolean
+  // The exact wording agreed to, so the record stays accurate even if the
+  // wording is edited later.
+  snapshot        Json
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 }
 
 model Payment {

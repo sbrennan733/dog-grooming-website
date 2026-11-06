@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import FormField from "@/components/ui/FormField";
 import {
@@ -112,6 +113,17 @@ export default function ContactForm() {
             {state.message}
           </p>
         )}
+
+        <p className="text-sm text-muted">
+          We only use your details to reply to your message. See our{" "}
+          <Link
+            href="/privacy"
+            className="font-bold text-brand hover:underline"
+          >
+            Privacy Notice
+          </Link>
+          .
+        </p>
 
         <Button type="submit" disabled={pending} className="w-full sm:w-auto">
           {pending ? "Sending..." : "Send Message"}

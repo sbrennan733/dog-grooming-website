@@ -4,6 +4,12 @@ import nodemailer from "nodemailer";
 import { businessInfo } from "@/data/business";
 import { sendViaGraph } from "./microsoft-graph";
 
+export interface EmailAttachment {
+  filename: string;
+  contentType: string;
+  content: Uint8Array;
+}
+
 export interface EmailMessage {
   to: string;
   subject: string;
@@ -11,6 +17,7 @@ export interface EmailMessage {
   html: string;
   // Where replies should go. Defaults to the business email.
   replyTo?: string;
+  attachments?: EmailAttachment[];
 }
 
 function graphIsConfigured(): boolean {
@@ -50,6 +57,11 @@ async function sendViaSmtp(message: EmailMessage): Promise<void> {
     subject: message.subject,
     text: message.text,
     html: message.html,
+    attachments: message.attachments?.map((attachment) => ({
+      filename: attachment.filename,
+      contentType: attachment.contentType,
+      content: Buffer.from(attachment.content),
+    })),
   });
 }
 
@@ -69,10 +81,26 @@ async function writeToDevOutbox(message: EmailMessage): Promise<void> {
     "utf8"
   );
 
+  // Attachments are saved next to the email so they can be opened.
+  for (const attachment of message.attachments ?? []) {
+    const safeName = attachment.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+    await writeFile(`${file}.${safeName}`, attachment.content);
+  }
+
   console.log(`[email] SMTP not configured, wrote "${message.subject}" to ${file}`);
 }
 
 export async function sendEmail(message: EmailMessage): Promise<void> {
+  // EMAIL_MODE=outbox forces the local outbox folder even when real email is
+  // configured, so development and tests can never email real people.
+  if (
+    process.env.EMAIL_MODE === "outbox" &&
+    process.env.NODE_ENV !== "production"
+  ) {
+    await writeToDevOutbox(message);
+    return;
+  }
+
   if (graphIsConfigured()) {
     await sendViaGraph(
       {
