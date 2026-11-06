@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 // Update this whenever the notice changes.
-const LAST_UPDATED = "27 October 2026";
+const LAST_UPDATED = "6 November 2026";
 
 const sectionClassName = "mb-6 rounded-3xl bg-surface p-8 shadow-soft";
 const listClassName = "list-disc space-y-2 pl-5 text-muted";
@@ -69,6 +69,12 @@ export default function PrivacyPage() {
               <strong className="text-ink">Messages you send us:</strong> your
               name, email and what you write in the contact form.
             </li>
+            <li>
+              <strong className="text-ink">Reviews you write:</strong> your
+              star rating and your comment, linked to your booking. If we
+              approve it, it is shown on the website with your first name,
+              the first letter of your surname and your dog&apos;s name.
+            </li>
           </ul>
 
           <p className="mt-4 text-muted">
@@ -83,6 +89,14 @@ export default function PrivacyPage() {
           </h2>
 
           <ul className={listClassName}>
+            <li>
+              <strong className="text-ink">
+                To show your review on our website
+              </strong>{" "}
+              if you choose to write one. Our legal reason is your consent.
+              You can ask us to take your review down at any time by
+              contacting us.
+            </li>
             <li>
               <strong className="text-ink">To run your bookings</strong>{" "}
               (creating your account, taking and confirming appointments,
@@ -146,8 +160,8 @@ export default function PrivacyPage() {
           <h2 className="mb-4 text-2xl text-ink">How long we keep it</h2>
           <p className="text-muted">
             We keep your account, your dogs&apos; details, your bookings and
-            your signed consent forms for 2 years after your last visit, then
-            delete them. Financial records of payments we have received may
+            your signed consent forms, and any review you wrote, for 2 years
+            after your last visit, then delete them. Financial records of payments we have received may
             be kept for longer, as the law requires. Messages you send through
             the contact form are kept for as long as needed to deal with them.
             You can ask us to delete your information sooner, see below.
