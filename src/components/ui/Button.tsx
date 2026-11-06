@@ -7,7 +7,7 @@ const baseStyles =
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand text-on-brand shadow-[0_6px_16px_rgb(15_118_110/0.28)] hover:-translate-y-0.5 hover:bg-brand-hover",
+    "bg-brand text-on-brand shadow-[0_6px_16px_rgb(11_120_133/0.28)] hover:-translate-y-0.5 hover:bg-brand-hover",
   secondary:
     "border-2 border-line bg-surface text-ink hover:-translate-y-0.5 hover:bg-surface-alt",
 };

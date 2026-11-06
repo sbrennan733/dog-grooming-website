@@ -8,28 +8,28 @@
 */
 @theme {
   /* Surfaces */
-  --color-background: #fbf7f2;
+  --color-background: #fdf8fa;
   --color-surface: #ffffff;
-  --color-surface-alt: #f4ece2;
+  --color-surface-alt: #f8eef3;
 
   /* Text */
-  --color-ink: #2b2622;
-  --color-muted: #6b625b;
+  --color-ink: #2a2730;
+  --color-muted: #645c66;
 
-  /* Brand (deep teal) */
-  --color-brand: #0f766e;
-  --color-brand-hover: #115e59;
-  --color-brand-soft: #d8f1ec;
+  /* Brand (teal, a shade deeper than the logo so white text passes AA) */
+  --color-brand: #0b7885;
+  --color-brand-hover: #09616c;
+  --color-brand-soft: #e3f5f7;
   --color-on-brand: #ffffff;
 
-  /* Accent (soft coral). accent-ink is the text-safe version. */
-  --color-accent: #f4845f;
-  --color-accent-soft: #fde7de;
-  --color-accent-ink: #a8432b;
+  /* Accent (logo pink). accent-ink is the text-safe version. */
+  --color-accent: #f05080;
+  --color-accent-soft: #fde4ee;
+  --color-accent-ink: #b01f50;
 
   /* Lines and form-control borders */
-  --color-line: #eadfd2;
-  --color-line-input: #9c8f82;
+  --color-line: #efdfe6;
+  --color-line-input: #8f8190;
 
   /* Feedback and status */
   --color-danger: #b42318;
@@ -45,11 +45,11 @@
   --color-neutral-ink: #5b5249;
 
   /* Footer */
-  --color-footer: #2b2622;
-  --color-footer-text: #d9cfc4;
+  --color-footer: #0e3d45;
+  --color-footer-text: #d3e6e9;
 
-  --shadow-soft: 0 8px 24px rgb(120 85 50 / 0.08);
-  --shadow-lift: 0 14px 32px rgb(120 85 50 / 0.14);
+  --shadow-soft: 0 8px 24px rgb(110 70 95 / 0.08);
+  --shadow-lift: 0 14px 32px rgb(110 70 95 / 0.14);
 }
 
 @theme inline {

@@ -32,7 +32,7 @@ const PAGE_WIDTH = 595.28; // A4
 const PAGE_HEIGHT = 841.89;
 const MARGIN = 54;
 
-const BRAND = rgb(0.059, 0.463, 0.431);
+const BRAND = rgb(0.043, 0.471, 0.522);
 const INK = rgb(0.169, 0.149, 0.133);
 const MUTED = rgb(0.42, 0.384, 0.357);
 const LINE = rgb(0.85, 0.82, 0.78);
