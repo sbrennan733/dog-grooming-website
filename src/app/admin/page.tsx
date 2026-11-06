@@ -8,6 +8,7 @@ import ButtonLink from "@/components/ui/ButtonLink";
 import { BUSINESS_TIME_ZONE } from "@/lib/timezone";
 import { businessInfo } from "@/data/business";
 import { priceForDog } from "@/lib/dog-size";
+import { dueForDeletion, retentionCutoff } from "@/lib/retention";
 import type { BookingStatus } from "@/generated/prisma/client";
 
 export const metadata: Metadata = {
@@ -55,7 +56,7 @@ export default async function AdminPage({
     ],
   };
 
-  const [bookings, upcomingCount, pastCount, unreadMessages] =
+  const [bookings, upcomingCount, pastCount, unreadMessages, dueRecords] =
     await Promise.all([
       prisma.booking.findMany({
         where: showingPast ? pastWhere : upcomingWhere,
@@ -71,6 +72,7 @@ export default async function AdminPage({
       prisma.booking.count({ where: upcomingWhere }),
       prisma.booking.count({ where: pastWhere }),
       prisma.contactMessage.count({ where: { isRead: false } }),
+      prisma.user.count({ where: dueForDeletion(retentionCutoff(now)) }),
     ]);
 
   const tabClass = (active: boolean) =>
@@ -95,6 +97,10 @@ export default async function AdminPage({
 
             <ButtonLink href="/admin/availability" variant="secondary">
               Appointment Times
+            </ButtonLink>
+
+            <ButtonLink href="/admin/retention" variant="secondary">
+              {dueRecords > 0 ? `Old records (${dueRecords} due)` : "Old records"}
             </ButtonLink>
           </div>
         </div>
