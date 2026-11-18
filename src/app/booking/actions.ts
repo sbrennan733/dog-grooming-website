@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { businessInfo } from "@/data/business";
 import { getAvailableDates, getAvailableSlots } from "@/lib/availability";
 import { zonedWallTimeToUtc } from "@/lib/timezone";
 import { priceForDog } from "@/lib/dog-size";
@@ -69,14 +70,20 @@ export async function createBooking(
     return { error: "That service could not be found." };
   }
 
-  const needsAssessment = !dog.assessmentCompletedAt;
-  if (needsAssessment && !service.isAssessment) {
-    return {
-      error: `${dog.name} needs an assessment visit before other services can be booked.`,
-    };
-  }
-  if (!needsAssessment && service.isAssessment) {
-    return { error: `${dog.name} has already completed their assessment.` };
+  if (!businessInfo.booking.assessmentRequired) {
+    if (service.isAssessment) {
+      return { error: "Assessment visits are not needed right now." };
+    }
+  } else {
+    const needsAssessment = !dog.assessmentCompletedAt;
+    if (needsAssessment && !service.isAssessment) {
+      return {
+        error: `${dog.name} needs an assessment visit before other services can be booked.`,
+      };
+    }
+    if (!needsAssessment && service.isAssessment) {
+      return { error: `${dog.name} has already completed their assessment.` };
+    }
   }
 
   // Re-check the slot is still free — closes the race window between the

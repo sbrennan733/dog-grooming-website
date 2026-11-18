@@ -15,6 +15,13 @@ export interface BusinessInfo {
     depositsEnabled: boolean;
   };
 
+  booking: {
+    // When true, a dog must complete an assessment visit before any other
+    // service can be booked. When false the assessment is hidden everywhere
+    // and every dog can book any service straight away.
+    assessmentRequired: boolean;
+  };
+
   social: {
     // Only set the networks the business actually has a page on.
     facebook?: string;

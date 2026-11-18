@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Dog } from "@/generated/prisma/client";
 import { dogSizeLabels } from "@/lib/dog-size";
+import { businessInfo } from "@/data/business";
 
 interface DogCardProps {
   dog: Dog;
@@ -28,15 +29,17 @@ export default function DogCard({ dog }: DogCardProps) {
         </Link>
       </div>
 
-      <span
-        className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
-          assessmentComplete
-            ? "bg-ok-soft text-ok-ink"
-            : "bg-warn-soft text-warn-ink"
-        }`}
-      >
-        {assessmentComplete ? "Approved for Grooming" : "Assessment Required"}
-      </span>
+      {businessInfo.booking.assessmentRequired && (
+        <span
+          className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
+            assessmentComplete
+              ? "bg-ok-soft text-ok-ink"
+              : "bg-warn-soft text-warn-ink"
+          }`}
+        >
+          {assessmentComplete ? "Approved for Grooming" : "Assessment Required"}
+        </span>
+      )}
 
       {dog.hasLongDoubleCoat && (
         <p className="mt-3 text-sm text-muted">Long-haired, double-coated</p>

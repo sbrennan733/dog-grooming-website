@@ -16,6 +16,12 @@ export const businessInfo: BusinessInfo = {
     depositsEnabled: false,
   },
 
+  booking: {
+    // Off while the business is starting up. Set to true to bring back the
+    // assessment visit before a dog's first groom.
+    assessmentRequired: false,
+  },
+
   social: {
     facebook: "https://www.facebook.com/people/Bubbles-and-Barks/61595726270851/",
   },

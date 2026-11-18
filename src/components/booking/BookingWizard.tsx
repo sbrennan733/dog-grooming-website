@@ -46,9 +46,12 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
   const problems = consentProblems(consent);
 
   const selectedDog = dogs.find((dog) => dog.id === dogId);
-  const needsAssessment = selectedDog
-    ? !selectedDog.assessmentCompletedAt
-    : false;
+  // With assessments switched off, no dog needs one, so the assessment
+  // service drops out of the list below.
+  const needsAssessment =
+    selectedDog && businessInfo.booking.assessmentRequired
+      ? !selectedDog.assessmentCompletedAt
+      : false;
 
   const availableServices = selectedDog
     ? services.filter((service) => service.isAssessment === needsAssessment)
@@ -146,11 +149,13 @@ export default function BookingWizard({ dogs, services }: BookingWizardProps) {
               <p className="text-sm text-muted">
                 {dog.breed} &middot; {dogSizeLabels[dog.size]}
               </p>
-              <p className="mt-1 text-xs text-muted">
-                {dog.assessmentCompletedAt
-                  ? "Approved for Grooming"
-                  : "Assessment Required"}
-              </p>
+              {businessInfo.booking.assessmentRequired && (
+                <p className="mt-1 text-xs text-muted">
+                  {dog.assessmentCompletedAt
+                    ? "Approved for Grooming"
+                    : "Assessment Required"}
+                </p>
+              )}
             </button>
           ))}
         </div>
