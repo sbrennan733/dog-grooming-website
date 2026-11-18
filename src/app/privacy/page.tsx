@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 // Update this whenever the notice changes.
-const LAST_UPDATED = "6 November 2026";
+const LAST_UPDATED = "18 November 2026";
 
 const sectionClassName = "mb-6 rounded-3xl bg-surface p-8 shadow-soft";
 const listClassName = "list-disc space-y-2 pl-5 text-muted";
@@ -66,8 +66,10 @@ export default function PrivacyPage() {
               you signed.
             </li>
             <li>
-              <strong className="text-ink">Messages you send us:</strong> your
-              name, email and what you write in the contact form.
+              <strong className="text-ink">Messages you send us:</strong> you
+              need an account to use the contact form, so we keep your name
+              and email from it, which of your dogs you are asking about, and
+              what you write.
             </li>
             <li>
               <strong className="text-ink">Reviews you write:</strong> your

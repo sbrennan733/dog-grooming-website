@@ -77,6 +77,16 @@ export default async function AdminMessagesPage() {
                   &gt;
                 </p>
 
+                {message.dogName && (
+                  <p className="mb-3 text-sm text-muted [overflow-wrap:anywhere]">
+                    About their dog:{" "}
+                    <strong className="text-ink">
+                      {message.dogName}
+                      {message.dogBreed ? ` (${message.dogBreed})` : ""}
+                    </strong>
+                  </p>
+                )}
+
                 <p className="whitespace-pre-wrap text-ink [overflow-wrap:anywhere]">
                   {message.message}
                 </p>

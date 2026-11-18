@@ -1,5 +1,6 @@
 "use server";
 
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import { businessInfo } from "@/data/business";
 import { sendEmail } from "@/lib/email/mailer";
@@ -22,18 +23,27 @@ export async function sendContactMessage(
   _prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
-  // Honeypot: real visitors never see or fill this field, bots usually do.
-  // Pretend it worked so the bot learns nothing.
-  if (text(formData, "website") !== "") {
-    return { success: true };
-  }
+  // Only signed-in customers can write to us. Server Actions are plain POST
+  // endpoints, so this is checked here, not just by the page hiding the form.
+  const user = await requireUser();
 
   const values = {
-    name: text(formData, "name"),
-    email: text(formData, "email"),
+    dogId: text(formData, "dogId"),
     subject: text(formData, "subject"),
     message: text(formData, "message"),
   };
+
+  const account = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { name: true, email: true, emailVerified: true },
+  });
+
+  if (!account?.emailVerified) {
+    return {
+      message: "Please confirm your email address before sending a message.",
+      values,
+    };
+  }
 
   const validatedFields = contactSchema.safeParse(values);
 
@@ -44,33 +54,60 @@ export async function sendContactMessage(
     };
   }
 
-  const { name, email, subject, message } = validatedFields.data;
+  const { dogId, subject, message } = validatedFields.data;
 
-  // This form is public, so cap how fast messages can be created. Counting
-  // saved messages needs no extra infrastructure.
+  // The dog must be one of this customer's own.
+  const dog = await prisma.dog.findFirst({
+    where: { id: dogId, ownerId: user.id },
+    select: { name: true, breed: true },
+  });
+
+  if (!dog) {
+    return {
+      errors: { dogId: ["Please choose which dog your message is about."] },
+      values,
+    };
+  }
+
+  // Cap how fast messages can be created. Counting saved messages needs no
+  // extra infrastructure.
   const since = new Date(Date.now() - WINDOW_MS);
   const [fromSender, total] = await Promise.all([
     prisma.contactMessage.count({
-      where: { email, createdAt: { gte: since } },
+      where: { email: account.email, createdAt: { gte: since } },
     }),
     prisma.contactMessage.count({ where: { createdAt: { gte: since } } }),
   ]);
 
   if (fromSender >= MAX_PER_SENDER_PER_WINDOW || total >= MAX_TOTAL_PER_WINDOW) {
     return {
-      message: `We've received a lot of messages recently. Please try again later, or email ${businessInfo.contact.email} directly.`,
+      message: `We've received a lot of messages recently. Please try again later, or call us on ${businessInfo.contact.phone}.`,
       values,
     };
   }
 
   // Save first so the message is never lost, even if the email fails.
   await prisma.contactMessage.create({
-    data: { name, email, subject, message },
+    data: {
+      name: account.name,
+      email: account.email,
+      subject,
+      message,
+      dogName: dog.name,
+      dogBreed: dog.breed,
+    },
   });
 
   try {
     await sendEmail(
-      buildContactNotificationEmail({ name, email, subject, message })
+      buildContactNotificationEmail({
+        name: account.name,
+        email: account.email,
+        dogName: dog.name,
+        dogBreed: dog.breed,
+        subject,
+        message,
+      })
     );
   } catch (error) {
     // The message is safely stored and visible in the admin area, so the
