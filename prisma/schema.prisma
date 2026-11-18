@@ -206,6 +206,10 @@ model ContactMessage {
   email     String
   subject   String
   message   String
+  // Which dog the message is about, copied as text so it survives the dog or
+  // account being deleted. Empty on messages from before the form needed a login.
+  dogName   String?
+  dogBreed  String?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
