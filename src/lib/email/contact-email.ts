@@ -7,10 +7,12 @@ import { escapeHtml } from "./escape-html";
 export function buildContactNotificationEmail(input: {
   name: string;
   email: string;
+  dogName: string;
+  dogBreed: string;
   subject: string;
   message: string;
 }): EmailMessage {
-  const { name, email, subject, message } = input;
+  const { name, email, dogName, dogBreed, subject, message } = input;
 
   // Header values must be a single line (stops header injection).
   const singleLine = (value: string) => value.replace(/\s+/g, " ").trim();
@@ -20,6 +22,7 @@ export function buildContactNotificationEmail(input: {
     "",
     `Name: ${singleLine(name)}`,
     `Email: ${email}`,
+    `About their dog: ${singleLine(dogName)} (${singleLine(dogBreed)})`,
     `Subject: ${singleLine(subject)}`,
     "",
     message,
@@ -34,6 +37,7 @@ export function buildContactNotificationEmail(input: {
       <h1 style="margin:0 0 16px;font-size:20px;">New website message</h1>
       <p style="margin:0 0 4px;"><strong>Name:</strong> ${escapeHtml(singleLine(name))}</p>
       <p style="margin:0 0 4px;"><strong>Email:</strong> ${escapeHtml(email)}</p>
+      <p style="margin:0 0 4px;"><strong>About their dog:</strong> ${escapeHtml(singleLine(dogName))} (${escapeHtml(singleLine(dogBreed))})</p>
       <p style="margin:0 0 16px;"><strong>Subject:</strong> ${escapeHtml(singleLine(subject))}</p>
       <p style="margin:0 0 16px;line-height:1.5;white-space:pre-wrap;">${escapeHtml(message)}</p>
       <p style="margin:0;font-size:14px;color:#645c66;">Hit reply to answer ${escapeHtml(singleLine(name))} directly.</p>

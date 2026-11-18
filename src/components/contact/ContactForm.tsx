@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/form-styles";
 import { sendContactMessage } from "@/app/contact/actions";
 
-export default function ContactForm() {
+interface ContactFormProps {
+  dogs: { id: string; name: string; breed: string }[];
+  // Shown so the customer can see which account the message is sent from.
+  email: string;
+}
+
+export default function ContactForm({ dogs, email }: ContactFormProps) {
   const [state, formAction, pending] = useActionState(
     sendContactMessage,
     undefined
@@ -29,34 +35,52 @@ export default function ContactForm() {
     );
   }
 
+  const dogErrors = state?.errors?.dogId;
   const messageErrors = state?.errors?.message;
 
   return (
     <div>
-      <h2 className="mb-6 text-3xl text-ink">Send a Message</h2>
+      <h2 className="mb-2 text-3xl text-ink">Send a Message</h2>
+
+      <p className="mb-6 text-muted">
+        We&apos;ll reply to <strong className="text-ink">{email}</strong>.
+      </p>
 
       <form action={formAction} className="space-y-5">
-        <FormField
-          label="Name"
-          name="name"
-          type="text"
-          required
-          maxLength={100}
-          autoComplete="name"
-          defaultValue={state?.values?.name}
-          errors={state?.errors?.name}
-        />
+        <div>
+          <label htmlFor="dogId" className={labelClassName}>
+            Which dog is this about?
+          </label>
 
-        <FormField
-          label="Email"
-          name="email"
-          type="email"
-          required
-          maxLength={254}
-          autoComplete="email"
-          defaultValue={state?.values?.email}
-          errors={state?.errors?.email}
-        />
+          <select
+            id="dogId"
+            name="dogId"
+            required
+            defaultValue={state?.values?.dogId ?? ""}
+            aria-invalid={Boolean(dogErrors?.length)}
+            aria-describedby={dogErrors?.length ? "dogId-error" : undefined}
+            className={inputClassName}
+          >
+            <option value="" disabled>
+              Choose a dog
+            </option>
+            {dogs.map((dog) => (
+              <option key={dog.id} value={dog.id}>
+                {dog.name} ({dog.breed})
+              </option>
+            ))}
+          </select>
+
+          {dogErrors?.length ? (
+            <div id="dogId-error" role="alert">
+              {dogErrors.map((error) => (
+                <p key={error} className="mt-1 text-sm text-danger">
+                  {error}
+                </p>
+              ))}
+            </div>
+          ) : null}
+        </div>
 
         <FormField
           label="Subject"
@@ -94,18 +118,6 @@ export default function ContactForm() {
               ))}
             </div>
           ) : null}
-        </div>
-
-        {/* Honeypot for spam bots: hidden from people and skipped by tab. */}
-        <div className="absolute -left-[9999px]" aria-hidden="true">
-          <label htmlFor="website">Leave this field empty</label>
-          <input
-            id="website"
-            name="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-          />
         </div>
 
         {state?.message && (

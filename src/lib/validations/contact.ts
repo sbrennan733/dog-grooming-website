@@ -1,15 +1,12 @@
 import { z } from "zod";
 
+// The sender's name and email come from their account, so the form only asks
+// which dog the message is about, plus the subject and message.
 export const contactSchema = z.object({
-  name: z
+  dogId: z
     .string()
     .trim()
-    .min(1, { error: "Please enter your name." })
-    .max(100, { error: "Please keep your name under 100 characters." }),
-  email: z
-    .email({ error: "Please enter a valid email address." })
-    .trim()
-    .max(254, { error: "That email address is too long." }),
+    .min(1, { error: "Please choose which dog your message is about." }),
   subject: z
     .string()
     .trim()
@@ -29,15 +26,13 @@ export type ContactFormState =
       success?: boolean;
       message?: string;
       errors?: {
-        name?: string[];
-        email?: string[];
+        dogId?: string[];
         subject?: string[];
         message?: string[];
       };
       // Sent back so a failed submit doesn't wipe what the person typed.
       values?: {
-        name: string;
-        email: string;
+        dogId: string;
         subject: string;
         message: string;
       };
